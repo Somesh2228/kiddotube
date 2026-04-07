@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Kids Alphabet Learning - Fun learning for kids">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kids Alphabet Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --shared-navbar-h: 0px;
+      --abc-nav-h: 84px;
+      --abc-controls-gap: calc(var(--abc-nav-h) + 18px);
+      --abc-controls-bottom: max(clamp(8px, 1.5vh, 16px), var(--abc-controls-gap));
+    }
+
+    html, body {
+      font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+      background: linear-gradient(180deg, #5bbfee 0%, #9ed8f5 38%, #cff2a0 68%, #7ec850 100%);
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* ══ BACK BTN ══ */
+    .back-btn {
+      position:fixed; top:14px; left:12px; z-index:300;
+      display:flex; align-items:center; gap:6px;
+      background:#a5430a; color:#fff;
+      border:none; border-radius:50px; padding:8px 16px;
+      font-family:'Fredoka One',cursive; font-size:14px;
+      cursor:pointer; text-decoration:none;
+      box-shadow:0 4px #5a2004, 0 0 14px rgba(255,100,0,.2);
+      transition:all .15s;
+    }
+    .back-btn:hover{background:#c4530d;}
+    .back-btn:active{transform:translateY(3px); box-shadow:0 1px #5a2004;}
+
+    /* ══ REALISTIC SUN ══ */
+    .sun-wrap {
+      position: fixed;
+      top: calc(var(--shared-navbar-h) + clamp(10px, 2.5vw, 24px));
+      right: clamp(12px, 3vw, 40px);
+      z-index: 5;
+      width: clamp(44px, 7vw, 92px);
+      height: clamp(44px, 7vw, 92px);
+    }
+    .sun-halo {
+      position: absolute; inset: -40%; border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(255,230,50,.55) 0%, rgba(255,200,0,.28) 38%,
+        rgba(255,160,0,.10) 62%, transparent 80%);
+      animation: haloBreath 4s ease-in-out infinite;
+    }
+    @keyframes haloBreath {
+      0%,100%{ transform:scale(1);   opacity:.85; }
+      50%    { transform:scale(1.1); opacity:1;   }
+    }
+    .sun-rays {
+      position: absolute; inset: -28%; border-radius: 50%;
+      animation: raysSpin 18s linear infinite;
+    }
+    .sun-rays::before {
+      content:''; position:absolute; inset:0; border-radius:50%;
+      background: repeating-conic-gradient(rgba(255,220,30,.55) 0deg 10deg, transparent 10deg 30deg);
+      mask: radial-gradient(circle, transparent 42%, black 56%, black 100%);
+      -webkit-mask: radial-gradient(circle, transparent 42%, black 56%, black 100%);
+    }
+    @keyframes raysSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .sun-disc {
+      position:absolute; inset:0; border-radius:50%;
+      background: radial-gradient(circle at 38% 35%, #fff9c4 0%, #ffe033 28%, #ffc107 58%, #ff8f00 85%, #e65100 100%);
+      box-shadow: 0 0 18px 4px rgba(255,220,0,.7), 0 0 48px 12px rgba(255,160,0,.4), 0 0 80px 24px rgba(255,100,0,.15);
+      animation: discPulse 3s ease-in-out infinite;
+    }
+    @keyframes discPulse {
+      0%,100%{ transform:scale(1);    box-shadow:0 0 18px 4px rgba(255,220,0,.7),0 0 48px 12px rgba(255,160,0,.4); }
+      50%    { transform:scale(1.05); box-shadow:0 0 26px 8px rgba(255,235,0,.9),0 0 64px 20px rgba(255,180,0,.55); }
+    }
+    .sun-disc::before {
+      content:''; position:absolute; top:14%; left:18%; width:34%; height:26%;
+      border-radius:50%;
+      background: radial-gradient(circle, rgba(255,255,255,.72) 0%, transparent 100%);
+    }
+
+    /* ══ CLOUDS ══ */
+    .cloud {
+      position:fixed; border-radius:50px;
+      background:rgba(255,255,255,.92);
+      animation:cloudDrift linear infinite;
+      z-index:1; pointer-events:none;
+    }
+    .cloud::before,.cloud::after {
+      content:''; position:absolute;
+      background:rgba(255,255,255,.92); border-radius:50%;
+    }
+    .cl1{width:120px;height:38px;top:7%; animation-duration:34s;animation-delay:0s;}
+    .cl1::before{width:58px;height:58px;top:-30px;left:14px;}
+    .cl1::after {width:44px;height:44px;top:-20px;left:54px;}
+    .cl2{width:90px; height:28px;top:18%;animation-duration:25s;animation-delay:-10s;}
+    .cl2::before{width:44px;height:44px;top:-24px;left:10px;}
+    .cl2::after {width:34px;height:34px;top:-16px;left:40px;}
+    .cl3{width:150px;height:44px;top:4%; animation-duration:42s;animation-delay:-20s;}
+    .cl3::before{width:70px;height:70px;top:-38px;left:20px;}
+    .cl3::after {width:54px;height:54px;top:-25px;left:66px;}
+    .cl4{width:74px; height:24px;top:28%;animation-duration:28s;animation-delay:-7s;}
+    .cl4::before{width:34px;height:34px;top:-18px;left:8px;}
+    .cl4::after {width:26px;height:26px;top:-12px;left:32px;}
+    @keyframes cloudDrift{from{transform:translateX(-260px)}to{transform:translateX(110vw)}}
+
+    /* ══ TITLE ══ */
+    #title {
+      position: fixed;
+      margin-top: 70px;
+      top: calc(var(--shared-navbar-h) + clamp(8px, 1.8vh, 18px));
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(15px, 3.8vw, 48px);
+      color: #fff;
+      text-shadow: 3px 3px 0 #bf360c,-1px -1px 0 #bf360c,
+                   1px -1px 0 #bf360c,-1px 1px 0 #bf360c;
+      white-space: nowrap;
+      animation: titleBounce 1s ease-in-out infinite alternate;
+      z-index: 30;
+      max-width: calc(100vw - clamp(80px,18vw,180px));
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @keyframes titleBounce {
+      from{ transform:translateX(-50%) translateY(0); }
+      to  { transform:translateX(-50%) translateY(-6px); }
+    }
+
+    /* ══ GROUND ══ */
+    .ground {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      height: var(--ground-h, clamp(55px, 14vh, 140px));
+      background: linear-gradient(180deg, #7ec850, #4e9b22);
+      z-index: 1;
+    }
+    .ground::before {
+      content:''; position:absolute; top:0; left:0;
+      width:100%; height:12px; background:#6abe3a;
+    }
+
+    /* ══ TRACK ══ */
+    .track {
+      position: fixed; left: 0; width: 100%; z-index: 3;
+      bottom: var(--ground-h, clamp(55px, 14vh, 140px));
+      height: 24px;
+    }
+    .sleepers {
+      position:absolute; inset:0;
+      background:repeating-linear-gradient(90deg,transparent 0 26px,#8B6914 26px 42px);
+      animation:trackMove .65s linear infinite;
+    }
+    .rail{position:absolute;width:100%;height:6px;background:linear-gradient(90deg,#aaa,#eee,#aaa);border-radius:4px;}
+    .rt{top:1px;} .rb{bottom:1px;}
+    @keyframes trackMove{from{background-position:0 0}to{background-position:42px 0}}
+
+    /* ══ TREES ══ */
+    .tree {
+      position: fixed; z-index: 2;
+      bottom: var(--ground-h, clamp(55px, 14vh, 140px));
+    }
+    @media (max-width: 480px) {
+      .tree-hide-sm { display: none; }
+    }
+
+    /* ══ TRAIN SCENE ══ */
+    #trainScene {
+      position: fixed; left: 0; width: 100%;
+      bottom: var(--ground-h, clamp(55px, 14vh, 140px));
+      z-index: 10; overflow: visible; pointer-events: none;
+    }
+    #trainRow {
+      position: absolute;
+      bottom: 24px;
+      left: 0; right: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0;
+      animation: trainBob .28s ease-in-out infinite alternate;
+    }
+    @keyframes trainBob{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+
+    #engineWrap { position:relative; flex-shrink:0; }
+
+    .smokeBox {
+      position:absolute; bottom:100%;
+      left: clamp(14px, 3vw, 36px);
+      pointer-events:none;
+    }
+    .puff {
+      position:absolute; bottom:0; border-radius:50%;
+      background:rgba(205,205,205,.82);
+      animation:puffRise 2.2s ease-out infinite;
+    }
+    .puff:nth-child(1){width:10px;height:10px;left:0;   animation-delay:0s;}
+    .puff:nth-child(2){width:16px;height:16px;left:-3px; animation-delay:.6s;}
+    .puff:nth-child(3){width:13px;height:13px;left:4px;  animation-delay:1.2s;}
+    @keyframes puffRise{
+      0%  {transform:translate(0,0) scale(1);opacity:.85;}
+      100%{transform:translate(-5px,-50px) scale(2.6);opacity:0;}
+    }
+
+    .coach { position:relative; flex-shrink:0; margin-left:-4px; }
+    @media (max-width: 1024px) { .coach { margin-left:-2px; } }
+    @media (max-width: 480px)  { .coach { margin-left:0; } }
+
+    .side-letter {
+      position:absolute; top:42%; left:50%;
+      transform:translate(-50%,-50%);
+      font-size: clamp(18px, 4.5vw, 58px);
+      font-weight:900; color:#fff;
+      text-shadow:2px 3px 7px rgba(0,0,0,.6);
+      line-height:1; pointer-events:none;
+    }
+
+    #midCard {
+      position:absolute;
+      background:linear-gradient(180deg,rgba(180,225,255,.5),rgba(120,190,235,.24));
+      border:3px solid rgba(255,255,255,.45);
+      border-radius:12px;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      gap:clamp(2px,.5vh,5px);
+      overflow:hidden; pointer-events:none;
+      z-index:20; padding:5px 6px; text-align:center;
+    }
+    .card-pop{animation:cPop .42s cubic-bezier(.175,.885,.32,1.275) both;}
+    @keyframes cPop{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
+
+    #midCard img {
+      width:auto; height:52%; max-width:88%;
+      object-fit:contain; display:block; border-radius:8px;
+      filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));
+    }
+    #midCard .wlbl {
+      font-size:clamp(11px,2.2vw,24px); font-weight:900;
+      color:#fff; line-height:1; text-align:center; flex-shrink:0;
+      text-shadow:0 2px 6px rgba(0,0,0,.45); display:none;
+    }
+    .mid-letter {
+      font-size:clamp(18px,4vw,48px); font-weight:900;
+      color:#fff176; line-height:1;
+      text-shadow:0 3px 8px rgba(0,0,0,.4);
+      letter-spacing:.04em; flex-shrink:0;
+    }
+
+    /* ══ CONTROLS ══ */
+    .controls {
+      margin-bottom: -65px;
+      position: fixed;
+      bottom: var(--abc-controls-bottom);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: clamp(5px, 1.5vw, 10px);
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      width: 100%;
+      padding: 0 8px;
+    }
+    .control-stack { display:flex; flex-direction:column; gap:clamp(4px,1vw,8px); }
+
+    .controls button {
+      padding: clamp(6px, 1.2vh, 13px) clamp(10px, 2.2vw, 24px);
+      font-size: clamp(11px, 1.8vw, 17px);
+      font-family: inherit; border:none; border-radius:14px;
+      cursor:pointer; background:#ff5722; color:#fff;
+      box-shadow:0 4px #c41c00; transition:all .15s;
+      white-space: nowrap;
+    }
+    .controls button:hover  { background:#ff7043; }
+    .controls button:active { transform:translateY(3px); box-shadow:0 1px #c41c00; }
+    #autoBtn     { background:#4caf50; box-shadow:0 4px #2e7d32; }
+    #autoBtn.on  { background:#f44336; box-shadow:0 4px #b71c1c; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 480px) {
+      :root { --ground-h: clamp(48px, 12vh, 90px); }
+    }
+    @media (min-width: 481px) and (max-width: 768px) {
+      :root { --ground-h: clamp(60px, 14vh, 110px); }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      :root { --ground-h: clamp(70px, 16vh, 130px); }
+    }
+    @media (min-width: 1025px) {
+      :root { --ground-h: clamp(80px, 18vh, 150px); }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .controls button {
+        padding: clamp(10px,2vh,16px) clamp(16px,4vw,28px);
+        font-size: clamp(13px, 3vw, 19px);
+        border-radius: 18px;
+      }
+    }
+
+    /* ══ BOTTOM NAV ══ */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;min-height:var(--abc-nav-h);background:rgba(255,255,255,.96);display:flex;align-items:stretch;box-shadow:0 -4px 24px rgba(0,0,0,.10);border-radius:20px 20px 0 0;z-index:500;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(8px);}
+    .ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;gap:3px;transition:all .2s;border-radius:14px;margin:0 2px;min-width:0;padding:8px 4px;}
+    .ni .ico{font-size:24px;transition:transform .2s;}
+    .ni .lbl{font-size:10px;font-weight:800;color:#6a8f6a;text-align:center;line-height:1.2;}
+    .ni.active .ico{transform:scale(1.22);}
+    .ni.active .lbl{color:#1b5e20;}
+    .ni.active{background:#f1f8e9;}
+
+    @media (max-width: 480px) {
+      :root {
+        --abc-nav-h: 88px;
+        --abc-controls-gap: calc(var(--abc-nav-h) + 12px);
+        --abc-controls-bottom: 46vh;
+      }
+      .controls{ gap:6px; padding:0 6px; }
+      .controls button{ padding:8px 12px; font-size:12px; border-radius:12px; }
+      .control-stack{ gap:6px; }
+      .bottom-nav{min-height:var(--abc-nav-h);padding:6px 6px calc(10px + env(safe-area-inset-bottom,0px));}
+      .ni .ico{font-size:22px;}
+      .ni .lbl{font-size:9px;}
+    }
+    @media (max-width: 380px) {
+      :root {
+        --abc-nav-h: 92px;
+        --abc-controls-gap: calc(var(--abc-nav-h) + 10px);
+        --abc-controls-bottom: 44vh;
+      }
+      .controls{ gap:5px; }
+      .controls button{ padding:7px 10px; font-size:11px; }
+    }
+    @media (min-width: 481px) and (max-width: 1024px) {
+      :root { --abc-controls-bottom: 40vh; }
+      .controls{ gap:8px; padding:0 12px; }
+      .controls button{ padding:10px 16px; font-size:13px; }
+    }
+  </style>
+</head>
+<body data-nav-page="abc" data-nav-home-href="Learn.html" data-nav-brand-href="Learn.html">
+
+
+<!-- ══ BACK BUTTON ══ -->
+<a class="back-btn" style="margin-top: 20px;" href="Learn.html">← Back</a>
+
+<!-- Realistic Sun -->
+<div class="sun-wrap">
+  <div class="sun-halo"></div>
+  <div class="sun-rays"></div>
+  <div class="sun-disc"></div>
+</div>
+
+<div class="cloud cl1"></div>
+<div class="cloud cl2"></div>
+<div class="cloud cl3"></div>
+<div class="cloud cl4"></div>
+
+<div class="ground"></div>
+<div class="track">
+  <div class="sleepers"></div>
+  <div class="rail rt"></div>
+  <div class="rail rb"></div>
+</div>
+
+<!-- Trees — some hidden on mobile -->
+<div class="tree" style="left:2%">
+  <svg id="t1" viewBox="0 0 36 62"><rect x="14" y="40" width="8" height="22" fill="#7a4f28"/><polygon points="18,0 0,24 7,24 0,42 11,42 11,52 25,52 25,42 36,42 29,24 36,24" fill="#3a8f2a"/></svg>
+</div>
+<div class="tree" style="right:3%">
+  <svg id="t2" viewBox="0 0 44 76"><rect x="18" y="50" width="8" height="26" fill="#8B5E3C"/><polygon points="22,0 1,32 9,32 0,52 14,52 14,64 30,64 30,52 44,52 35,32 43,32" fill="#2e7d22"/></svg>
+</div>
+<div class="tree tree-hide-sm" style="left:15%">
+  <svg id="t3" viewBox="0 0 30 54"><rect x="11" y="36" width="8" height="18" fill="#7a4f28"/><polygon points="15,0 0,22 6,22 0,38 10,38 10,46 20,46 20,38 30,38 24,22 30,22" fill="#4a9e30"/></svg>
+</div>
+<div class="tree tree-hide-sm" style="right:19%">
+  <svg id="t4" viewBox="0 0 34 60"><rect x="13" y="39" width="8" height="21" fill="#7a4f28"/><polygon points="17,0 0,25 7,25 0,42 10,42 10,52 24,52 24,42 34,42 27,25 34,25" fill="#38862a"/></svg>
+</div>
+
+<h1 id="title">क म्हणजे कमळ</h1>
+
+<!-- TRAIN -->
+<div id="trainScene">
+  <div id="trainRow">
+    <div id="engineWrap">
+      <div class="smokeBox">
+        <div class="puff"></div>
+        <div class="puff"></div>
+        <div class="puff"></div>
+      </div>
+    </div>
+    <div class="coach" id="coach0">
+      <div class="side-letter" id="lbl0"></div>
+    </div>
+    <div class="coach" id="coach1">
+      <div id="midCard" class="card-pop">
+        <div class="mid-letter" id="midLetter">A</div>
+        <img id="cardImg" src="" alt="">
+        <div class="wlbl" id="wordLbl"></div>
+      </div>
+    </div>
+    <div class="coach" id="coach2">
+      <div class="side-letter" id="lbl2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <button onclick="prev()">&#11013; Prev</button>
+  <div class="control-stack">
+    <button onclick="speak()">&#128266; Speak</button>
+    <button id="autoBtn" onclick="toggleAuto()">&#9654; Auto</button>
+  </div>
+  <button onclick="next()">Next &#10145;</button>
+</div>
+
+<script src="js/navbar.js"></script>
+<script>
+/* ═══ DATA ═══ */
+const data= [
+  {letter:"क", word:"कमळ", img:"https://png.pngtree.com/png-clipart/20220125/original/pngtree-lotus-flower-png-image_7208451.png"},
+  {letter:"ख", word:"खरबूज", img:"https://pngimg.com/uploads/melon/melon_PNG14260.png"},
+  {letter:"ग", word:"गाय", img:"https://pngimg.com/uploads/cow/cow_PNG50603.png"},
+  {letter:"घ", word:"घोडा", img:"https://pngimg.com/uploads/horse/horse_PNG321.png"},
+  {letter:"ङ", word:"ङ (rare)", img:"https://via.placeholder.com/150"},
+
+  {letter:"च", word:"चेंडू", img:"https://pngimg.com/uploads/ball/ball_PNG102.png"},
+  {letter:"छ", word:"छत्री", img:"https://pngimg.com/uploads/umbrella/umbrella_PNG695.png"},
+  {letter:"ज", word:"जहाज", img:"https://pngimg.com/uploads/ship/ship_PNG1359.png"},
+  {letter:"झ", word:"झाड", img:"https://pngimg.com/uploads/tree/tree_PNG927.png"},
+  {letter:"ञ", word:"ञ (rare)", img:"https://via.placeholder.com/150"},
+
+  {letter:"ट", word:"टमाटा", img:"https://pngimg.com/uploads/tomato/tomato_PNG12568.png"},
+  {letter:"ठ", word:"ठिपका", img:"https://pngimg.com/uploads/circle/circle_PNG61.png"},
+  {letter:"ड", word:"डमरू", img:"https://pngimg.com/uploads/drum/drum_PNG48.png"},
+  {letter:"ढ", word:"ढग", img:"https://pngimg.com/uploads/cloud/cloud_PNG27.png"},
+  {letter:"ण", word:"ण (rare)", img:"https://via.placeholder.com/150"},
+
+  {letter:"त", word:"तारा", img:"https://pngimg.com/uploads/star/star_PNG41474.png"},
+  {letter:"थ", word:"थर्मस", img:"https://pngimg.com/uploads/thermos/thermos_PNG23.png"},
+  {letter:"द", word:"दिवा", img:"https://pngimg.com/uploads/lamp/lamp_PNG106.png"},
+  {letter:"ध", word:"धनुष्य", img:"https://pngimg.com/uploads/bow/bow_PNG13.png"},
+  {letter:"न", word:"नळ", img:"https://pngimg.com/uploads/faucet/faucet_PNG33.png"},
+
+  {letter:"प", word:"पतंग", img:"https://pngimg.com/uploads/kite/kite_PNG25.png"},
+  {letter:"फ", word:"फुल", img:"https://pngimg.com/uploads/flower/flower_PNG102.png"},
+  {letter:"ब", word:"बकरी", img:"https://pngimg.com/uploads/goat/goat_PNG22.png"},
+  {letter:"भ", word:"भालू", img:"https://pngimg.com/uploads/bear/bear_PNG234.png"},
+  {letter:"म", word:"मासा", img:"https://pngimg.com/uploads/fish/fish_PNG25138.png"},
+
+  {letter:"य", word:"यज्ञ", img:"https://via.placeholder.com/150"},
+  {letter:"र", word:"रथ", img:"https://pngimg.com/uploads/chariot/chariot_PNG3.png"},
+  {letter:"ल", word:"लिंबू", img:"https://pngimg.com/uploads/lemon/lemon_PNG25213.png"},
+  {letter:"व", word:"वाघ", img:"https://pngimg.com/uploads/tiger/tiger_PNG23232.png"},
+  {letter:"श", word:"शाळा", img:"https://pngimg.com/uploads/school/school_PNG55.png"},
+
+  {letter:"ष", word:"षट्कोण", img:"https://pngimg.com/uploads/hexagon/hexagon_PNG36.png"},
+  {letter:"स", word:"ससा", img:"https://pngimg.com/uploads/rabbit/rabbit_PNG3796.png"},
+  {letter:"ह", word:"हत्ती", img:"https://pngimg.com/uploads/elephant/elephant_PNG18758.png"},
+  {letter:"ळ", word:"ळ (rare)", img:"https://via.placeholder.com/150"},
+  {letter:"क्ष", word:"क्षत्रिय", img:"https://via.placeholder.com/150"},
+  {letter:"ज्ञ", word:"ज्ञान", img:"https://via.placeholder.com/150"}
+];
+
+let index = 0, autoTimer = null;
+
+function getGroundH() {
+  const el = document.querySelector('.ground');
+  return el ? el.getBoundingClientRect().height : Math.min(window.innerHeight * 0.16, 140);
+}
+
+function getSizes() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const groundH  = getGroundH();
+  const trackH   = 24;
+  const trainZone = vh - groundH - trackH;
+
+  let sideH = Math.min(Math.max(trainZone * 0.32, 60), 200);
+  let sideW = Math.round(sideH * 1.45);
+  let midH  = Math.round(sideH * 1.7);
+  let midW  = Math.round(midH  * 1.45);
+
+  const engScale = vw < 400 ? 1.02 : vw < 768 ? 1.08 : vw < 1025 ? 1.14 : 1.2;
+  let engW  = Math.round(sideW * engScale);
+  let engH  = Math.round(engW  * 0.72);
+
+  const overlap = vw < 480 ? 0 : vw < 1025 ? 2 : 4;
+  const totalTrainW = engW + sideW + midW + sideW - (overlap * 2);
+  const maxTrainW = Math.max(vw - (vw < 480 ? 16 : vw < 1025 ? 28 : 40), 260);
+  if (totalTrainW > maxTrainW) {
+    const fit = maxTrainW / totalTrainW;
+    sideW = Math.round(sideW * fit);
+    sideH = Math.round(sideH * fit);
+    midW  = Math.round(midW  * fit);
+    midH  = Math.round(midH  * fit);
+    engW  = Math.round(engW  * fit);
+    engH  = Math.round(engH  * fit);
+  }
+
+  const treeScale = Math.min(Math.max(vw / 1200, 0.45), 1);
+  return { sideW, sideH, midW, midH, engW, engH, treeScale, overlap };
+}
+
+function scaleTrees(s) {
+  const sizes = [
+    {id:'t1', bw:36, bh:62},
+    {id:'t2', bw:44, bh:76},
+    {id:'t3', bw:30, bh:54},
+    {id:'t4', bw:34, bh:60},
+  ];
+  sizes.forEach(t => {
+    const el = document.getElementById(t.id);
+    if (!el) return;
+    el.setAttribute('width',  Math.round(t.bw * s.treeScale));
+    el.setAttribute('height', Math.round(t.bh * s.treeScale));
+  });
+}
+
+function wheel(cx, cy, r, dur) {
+  const ri = Math.round(r * 0.38);
+  return `<g>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#1a1a1a" stroke="#666" stroke-width="2.5"/>
+    <circle cx="${cx}" cy="${cy}" r="${ri}" fill="#999"/>
+    <line x1="${cx}" y1="${cy-r}" x2="${cx}" y2="${cy+r}" stroke="#666" stroke-width="2.2"/>
+    <line x1="${cx-r}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="#666" stroke-width="2.2"/>
+    <animateTransform attributeName="transform" attributeType="XML"
+      type="rotate" from="360 ${cx} ${cy}" to="0 ${cx} ${cy}"
+      dur="${dur||0.55}s" repeatCount="indefinite"/>
+  </g>`;
+}
+
+function tractorWheel(cx, cy, r, dur, rimColor, isRear) {
+  const ri   = Math.round(r * (isRear ? 0.42 : 0.38));
+  const lugs = isRear ? 12 : 8;
+  const lugH = Math.max(5, Math.round(r * 0.30));
+  let lugStr = '';
+  for (let i = 0; i < lugs; i++) {
+    const angle = i * (360 / lugs);
+    lugStr += `<rect x="${cx-2.5}" y="${cy-r-lugH*0.55}" width="5" height="${lugH}" rx="2.5" fill="#111"
+      transform="rotate(${angle} ${cx} ${cy})"/>`;
+  }
+  return `<g>
+    ${lugStr}
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#1a1a1a" stroke="#333" stroke-width="${isRear?3.5:2.5}"/>
+    <circle cx="${cx}" cy="${cy}" r="${ri}" fill="${rimColor}" stroke="#ddd" stroke-width="2"/>
+    <circle cx="${cx}" cy="${cy}" r="${Math.max(4,Math.round(r*0.14))}" fill="#cfd8dc"/>
+    <line x1="${cx}" y1="${cy-r+2}" x2="${cx}" y2="${cy+r-2}" stroke="#eceff1" stroke-width="2"/>
+    <line x1="${cx-r+2}" y1="${cy}" x2="${cx+r-2}" y2="${cy}" stroke="#eceff1" stroke-width="2"/>
+    <animateTransform attributeName="transform" attributeType="XML"
+      type="rotate" from="360 ${cx} ${cy}" to="0 ${cx} ${cy}"
+      dur="${dur||0.55}s" repeatCount="indefinite"/>
+  </g>`;
+}
+
+function buildEngine(ew, eh) {
+  const roadY   = 160;
+  const rearR   = 37, rearCX  = 160, rearCY  = roadY - rearR;
+  const frontR  = 30, frontCX = 42,  frontCY = roadY - frontR;
+
+  return `<svg viewBox="0 0 240 ${roadY}" width="${ew}" height="${eh}"
+      xmlns="http://www.w3.org/2000/svg" style="display:block;" id="engineSvg">
+    <rect x="${rearCX-14}" y="${rearCY-10}" width="28" height="12" rx="4" fill="#37474F"/>
+    <rect x="${frontCX+14}" y="62" width="98" height="36" rx="10" fill="#43A047"/>
+    <rect x="${frontCX-10}" y="70" width="34" height="30" rx="8" fill="#1B5E20"/>
+    <line x1="${frontCX-4}" y1="75" x2="${frontCX-4}" y2="96" stroke="#A5D6A7" stroke-width="2.2"/>
+    <line x1="${frontCX+4}" y1="75" x2="${frontCX+4}" y2="96" stroke="#A5D6A7" stroke-width="2.2"/>
+    <line x1="${frontCX+12}" y1="75" x2="${frontCX+12}" y2="96" stroke="#A5D6A7" stroke-width="2.2"/>
+    <rect x="${frontCX+14}" y="60" width="98" height="7" rx="3" fill="#FFF176" opacity=".9"/>
+    <rect x="${frontCX+30}" y="36" width="10" height="30" rx="4" fill="#455A64"/>
+    <rect x="${frontCX+26}" y="32" width="18" height="10" rx="5" fill="#546E7A"/>
+    <rect x="106" y="34" width="68" height="52" rx="10" fill="#FBC02D"/>
+    <rect x="114" y="42" width="22" height="22" rx="4" fill="#CFEFFF" opacity=".95"/>
+    <rect x="142" y="42" width="22" height="22" rx="4" fill="#CFEFFF" opacity=".95"/>
+    <rect x="102" y="28" width="78" height="10" rx="5" fill="#F57C00"/>
+    <rect x="106" y="80" width="68" height="10" rx="4" fill="#FB8C00" opacity=".9"/>
+    <path d="M${rearCX-rearR-4} ${rearCY-rearR+6} Q${rearCX} ${rearCY-rearR-18} ${rearCX+rearR+4} ${rearCY-rearR+6}"
+      fill="none" stroke="#2E7D32" stroke-width="13" stroke-linecap="round"/>
+    <path d="M${frontCX-frontR-2} ${frontCY-frontR+4} Q${frontCX} ${frontCY-frontR-12} ${frontCX+frontR+2} ${frontCY-frontR+4}"
+      fill="none" stroke="#1B5E20" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="${frontCX-8}" cy="${frontCY-8}" r="8" fill="#FFF59D"/>
+    <circle cx="${frontCX-8}" cy="${frontCY-8}" r="4" fill="#FFFDE7"/>
+    <rect x="174" y="${rearCY+2}" width="46" height="9" rx="4" fill="#8D6E63"/>
+    <rect x="216" y="${rearCY-4}" width="14" height="18" rx="4" fill="#B0BEC5"/>
+    ${tractorWheel(rearCX,  rearCY,  rearR,  0.50, '#78909C', true)}
+    ${tractorWheel(frontCX, frontCY, frontR, 0.55, '#90A4AE', false)}
+  </svg>`;
+}
+
+const SIDE_COLORS = [
+  {body:"#1565C0",roof:"#0D47A1"},
+  {body:"#6A1B9A",roof:"#4A148C"},
+];
+function buildSideCoach(ci, cw, ch) {
+  const {body,roof} = SIDE_COLORS[ci];
+  return `<svg viewBox="0 0 160 110" width="${cw}" height="${ch}"
+      xmlns="http://www.w3.org/2000/svg" style="display:block;">
+    <rect x="2"  y="12" width="156" height="68" rx="10" fill="${body}"/>
+    <rect x="2"  y="10" width="156" height="18" rx="8"  fill="${roof}"/>
+    <rect x="18" y="18" width="124" height="58" rx="8"  fill="#E3F2FD" opacity=".86"/>
+    <rect x="22" y="21" width="36"  height="10" rx="4"  fill="#fff" opacity=".45"/>
+    <rect x="2"  y="74" width="156" height="12" rx="4"  fill="${roof}"/>
+    <rect x="0"   y="62" width="7" height="11" rx="2" fill="#aaa"/>
+    <rect x="153" y="62" width="7" height="11" rx="2" fill="#aaa"/>
+    ${wheel(30,  92, 18, 0.55)}
+    ${wheel(130, 92, 18, 0.55)}
+  </svg>`;
+}
+
+const MID_WIN = {x:25, y:14, w:110, h:110};
+function buildMidCoach(cw, ch) {
+  const {x,y,w,h} = MID_WIN;
+  return `<svg viewBox="0 0 160 160" width="${cw}" height="${ch}"
+      xmlns="http://www.w3.org/2000/svg" style="display:block;">
+    <rect x="2"  y="12" width="156" height="118" rx="12" fill="#E65100"/>
+    <rect x="2"  y="10" width="156" height="20"  rx="10" fill="#BF360C"/>
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="#CFEFFF" opacity=".95"/>
+    <rect x="18" y="17" width="50"  height="11" rx="5" fill="#fff" opacity=".5"/>
+    <text x="16"  y="122" font-size="14" fill="#FFD600" opacity=".7">★</text>
+    <text x="136" y="122" font-size="14" fill="#FFD600" opacity=".7">★</text>
+    <rect x="2"  y="124" width="156" height="14" rx="5" fill="#BF360C"/>
+    <rect x="0"   y="108" width="7" height="12" rx="2" fill="#aaa"/>
+    <rect x="153" y="108" width="7" height="12" rx="2" fill="#aaa"/>
+    ${wheel(30,  142, 18, 0.55)}
+    ${wheel(130, 142, 18, 0.55)}
+  </svg>`;
+}
+
+function buildTrain() {
+  const s = getSizes();
+  scaleTrees(s);
+  document.getElementById("engineWrap").insertAdjacentHTML("beforeend", buildEngine(s.engW, s.engH));
+  document.getElementById("coach0").insertAdjacentHTML("afterbegin", buildSideCoach(0, s.sideW, s.sideH));
+  document.getElementById("coach1").insertAdjacentHTML("afterbegin", buildMidCoach(s.midW, s.midH));
+  document.getElementById("coach2").insertAdjacentHTML("afterbegin", buildSideCoach(1, s.sideW, s.sideH));
+  positionTrain(s);
+  positionCard(s);
+}
+
+function positionTrain(s) {
+  if (!s) s = getSizes();
+  const row = document.getElementById("trainRow");
+  const totalWidth = s.engW + s.sideW + s.midW + s.sideW - (s.overlap * 2);
+  row.style.width = totalWidth + "px";
+  row.style.left = "50%";
+  row.style.right = "auto";
+  row.style.marginLeft = (-totalWidth / 2) + "px";
+}
+
+function positionCard(s) {
+  if (!s) s = getSizes();
+  const sx = s.midW / 160, sy = s.midH / 160;
+  const pad = 5;
+  const card = document.getElementById("midCard");
+  card.style.left   = (MID_WIN.x * sx + pad) + "px";
+  card.style.top    = (MID_WIN.y * sy + pad) + "px";
+  card.style.width  = (MID_WIN.w * sx - pad * 2) + "px";
+  card.style.height = (MID_WIN.h * sy - pad * 2) + "px";
+}
+
+function rebuildTrain() {
+  document.getElementById("engineWrap").querySelector("svg")?.remove();
+  ["coach0","coach1","coach2"].forEach(id => document.getElementById(id).querySelector("svg")?.remove());
+  buildTrain();
+}
+
+function updateLetters() {
+  document.getElementById("lbl0").textContent = data[(index - 1 + data.length) % data.length].letter;
+  document.getElementById("lbl2").textContent = data[(index + 1) % data.length].letter;
+}
+
+function updateUI() {
+  const d = data[index];
+  document.getElementById("title").textContent = d.letter + " - " + d.word;
+  document.getElementById("cardImg").src = d.img;
+  document.getElementById("midLetter").textContent = d.letter;
+  const card = document.getElementById("midCard");
+  card.classList.remove("card-pop");
+  void card.offsetWidth;
+  card.classList.add("card-pop");
+  updateLetters(); positionCard(); speak();
+}
+
+function next() { index = (index + 1) % data.length; updateUI(); }
+function prev() { index = (index - 1 + data.length) % data.length; updateUI(); }
+
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    dx < 0 ? next() : prev();
+  }
+}, {passive:true});
+
+function speak() {
+  const voices = speechSynthesis.getVoices();
+  const u = new SpeechSynthesisUtterance(data[index].letter + "   " + data[index].word);
+  
+  // Try Marathi first, then Hindi as fallback
+  u.voice = voices.find(x => x.lang === "mr-IN")
+         || voices.find(x => x.lang.startsWith("mr"))
+         || voices.find(x => x.lang === "hi-IN")
+         || voices.find(x => x.lang.startsWith("hi"))
+         || null;
+  
+  if (!u.voice) u.lang = "mr-IN"; // set lang even if no specific voice
+  u.rate = 0.78; u.pitch = 1.3; u.volume = 1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function playToot() {
+  try {
+    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.connect(g); g.connect(ac.destination);
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(220, ac.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(175, ac.currentTime + .3);
+    g.gain.setValueAtTime(.13, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .5);
+    osc.start(); osc.stop(ac.currentTime + .5);
+  } catch(e){}
+}
+
+function toggleAuto() {
+  const btn = document.getElementById("autoBtn");
+  if (autoTimer) {
+    clearInterval(autoTimer); autoTimer = null;
+    btn.textContent = "▶ Auto"; btn.classList.remove("on");
+  } else {
+    autoTimer = setInterval(() => { next(); playToot(); }, 2800);
+    btn.textContent = "⏹ Stop"; btn.classList.add("on");
+  }
+}
+
+speechSynthesis.onvoiceschanged = () => {};
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { rebuildTrain(); updateLetters(); positionCard(); }, 120);
+});
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => { rebuildTrain(); updateLetters(); positionCard(); }, 350);
+});
+window.addEventListener("load", () => { buildTrain(); updateUI(); });
+</script>
+</body>
+</html>

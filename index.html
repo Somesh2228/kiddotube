@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiddoTube &#128218; - Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/index.css">
+<style>
+.landing-body.intro-active {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
+.landing-shell {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.landing-body.intro-active .landing-shell {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(16px);
+}
+
+.landing-body.home-open .landing-shell {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#page-book {
+  z-index: 180;
+}
+
+#page-book .book-scene {
+  cursor: pointer;
+}
+
+#page-book .book-scene:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 5px rgba(255, 159, 67, 0.35);
+  border-radius: 28px;
+}
+
+.intro-copy {
+  max-width: 460px;
+  text-align: center;
+  color: rgba(80, 40, 10, 0.82);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.7;
+  padding: 0 20px;
+}
+</style>
+</head>
+<body class="landing-body intro-active" data-nav-page="home" data-nav-home-href="#landing-home" data-nav-brand-href="#landing-home" data-nav-cta-href="Learn.html">
+
+<canvas id="stars-canvas"></canvas>
+
+<section class="page active" id="page-book" aria-label="KiddoTube opening book">
+  <div class="book-scene" id="book-scene" role="button" tabindex="0" aria-label="Open KiddoTube" onclick="openLandingBook()">
+    <div class="sparkle" style="animation-delay:0s">&#11088;</div>
+    <div class="sparkle" style="animation-delay:1s">&#10024;</div>
+    <div class="sparkle" style="animation-delay:2s">&#127775;</div>
+    <div class="sparkle" style="animation-delay:3s">&#128171;</div>
+    <div class="book-3d">
+      <div class="book-spine"></div>
+      <div class="book-front">
+        <div class="book-logo-emoji">&#128218;</div>
+        <div class="book-title-text">KiddoTube</div>
+        <div class="book-subtitle">Learn . Play . Grow</div>
+      </div>
+    </div>
+  </div>
+  <div class="book-hint-row">&#128070; Click the book to begin</div>
+</section>
+
+<script src="js/navbar.js"></script>
+<script src="js/app.js"></script>
+<script>
+initStars();
+
+function getSession() {
+  return JSON.parse(localStorage.getItem('kiddotube_session') || 'null');
+}
+
+function getAccounts() {
+  return JSON.parse(localStorage.getItem('kiddotube_accounts') || '{}');
+}
+
+let landingBookOpened = false;
+
+function openLandingBook() {
+  if (landingBookOpened) return;
+  landingBookOpened = true;
+
+  const session = getSession();
+  const accounts = getAccounts();
+  const account = session ? accounts[session.name] : null;
+
+  if (account) {
+    // Logged in → go straight to app
+    window.location.href = 'app.html';
+    return;
+  }
+
+  // Not logged in → go to login, which will redirect to app after login
+  window.location.href = 'login.html?next=app.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const bookScene = document.getElementById('book-scene');
+  bookScene.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openLandingBook();
+    }
+  });
+});
+</script>
+</body>
+</html>

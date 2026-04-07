@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="KiddoTube - Memory Match 15 - Fun learning for kids">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KiddoTube - Memory Match 15</title>
+  <link rel="stylesheet" href="css/memory-match-15.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="memory-match-page" data-nav-page="memory-match-15" data-nav-home-href="games.html" data-nav-brand-href="games.html" data-nav-search-href="app.html" data-nav-profile-href="profile.html">
+
+ <div class="game-page-topbar">
+  <button class="game-page-topbar-back" type="button" onclick="goBackToGames()">← Back</button>
+  <div class="game-page-topbar-title">Memory Match 15</div>
+  <div class="game-page-topbar-score" id="memory-topbar-score">⭐ 0</div>
+ </div>
+
+  <div class="bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="wrapper">
+    <header class="header">
+      <h1 class="logo">🃏 Memory Match 15</h1>
+      <p class="tagline">Flip, match, and level up through all 15 stages.</p>
+      <p class="save-note" id="save-note">Play now and clear every level.</p>
+    </header>
+
+    <div class="level-progress-wrap">
+      <div class="level-progress-bar">
+        <div class="level-fill" id="level-fill"></div>
+      </div>
+      <span class="level-text" id="level-text">Level 1 / 15</span>
+    </div>
+
+    <div class="hud">
+      <div class="hud-box" id="hud-score">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="score">0</span>
+      </div>
+      <div class="hud-box" id="hud-timer">
+        <span class="hud-label">Time</span>
+        <span class="hud-value" id="timer">0s</span>
+      </div>
+      <div class="hud-box" id="hud-moves">
+        <span class="hud-label">Moves</span>
+        <span class="hud-value" id="moves">0</span>
+      </div>
+    </div>
+
+    <div class="level-bar">
+      <button class="level-btn active" data-level="easy" type="button">🐣 Easy<br><small>Levels 1-5</small></button>
+      <button class="level-btn" data-level="medium" type="button">🦊 Medium<br><small>Levels 6-10</small></button>
+      <button class="level-btn" data-level="hard" type="button">🦁 Hard<br><small>Levels 11-15</small></button>
+    </div>
+
+    <div class="board-wrap">
+      <div class="board" id="board" role="grid" aria-label="Memory card grid"></div>
+    </div>
+
+    <div class="action-row">
+      <button class="restart-btn" id="restart-btn" type="button">🔄 Restart</button>
+      
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-stars">⭐ ⭐ ⭐</div>
+      <h2 class="modal-title" id="modal-title">Level Clear! 🎉</h2>
+      <p class="modal-body" id="modal-body"></p>
+      <button class="modal-btn" id="modal-play-again" type="button">▶ Next Level</button>
+    </div>
+  </div>
+
+  <script src="js/navbar.js"></script>
+  <script src="js/memory-match-15.js"></script>
+  <script>
+    function goBackToGames() {
+    localStorage.setItem('startTab', 'games');
+    window.location.href = "app.html";
+    }
+
+    function mirrorGameHeaderScore(sourceId, targetId, prefix) {
+      const source = document.getElementById(sourceId);
+      const target = document.getElementById(targetId);
+      if (!source || !target) return;
+      const sync = () => {
+        target.textContent = `${prefix}${String(source.textContent || '0').trim()}`;
+      };
+      sync();
+      new MutationObserver(sync).observe(source, { childList: true, subtree: true, characterData: true });
+    }
+
+    window.addEventListener('load', () => {
+      mirrorGameHeaderScore('score', 'memory-topbar-score', '⭐ ');
+    });
+  </script>
+</body>
+</html>

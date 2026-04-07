@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="🎈 Balloon Pop Party! - Fun learning for kids">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎈 Balloon Pop Party!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/balloon-pop-party.css" />
+</head>
+<body class="balloon-pop-page" data-nav-page="balloon-pop-party" data-nav-home-href="games.html" data-nav-brand-href="games.html" data-nav-search-href="app.html" data-nav-profile-href="profile.html">
+ 
+  <div class="game-page-topbar">
+    <button class="game-page-topbar-back" type="button" onclick="goBackToGames()">← Back</button>
+    <div class="game-page-topbar-title">Balloon Pop Party</div>
+    <div class="game-page-topbar-score" id="balloon-topbar-score">⭐ 0</div>
+  </div>
+  <div class="save-note-pill" id="save-note">Play now and save your best levels.</div>
+
+  <!-- Stars Background -->
+  <div class="stars" id="stars"></div>
+
+  <!-- HUD -->
+  <div class="hud" id="hud">
+    <div class="hud-item score-box">
+      <span class="hud-label">⭐ SCORE</span>
+      <span class="hud-value" id="score">0</span>
+    </div>
+    <div class="hud-item logo-box">
+      <span class="game-title">🎈 POP!</span>
+      <div class="level-bar-wrap">
+        <div class="level-bar-track">
+          <div class="level-bar-fill" id="levelBarFill"></div>
+        </div>
+        <span class="level-bar-label">LVL <span id="levelDisplay">1</span> · <span id="levelBarText">0/5</span></span>
+      </div>
+    </div>
+    <div class="hud-item timer-box">
+      <span class="hud-label">⏰ TIME</span>
+      <span class="hud-value" id="timer">30</span>
+    </div>
+  </div>
+
+  <!-- Game Area -->
+  <div class="game-area" id="gameArea"></div>
+
+  <!-- Start Screen -->
+  <div class="overlay" id="startScreen">
+    <div class="overlay-card">
+      <div class="overlay-emoji">🎈</div>
+      <h1 class="overlay-title">Balloon Pop<br/><span>Party!</span></h1>
+      <div class="balloon-legend">
+        <div class="legend-item"><span class="leg-icon normal-icon">🎈</span><span>Normal = <b>+1</b></span></div>
+        <div class="legend-item"><span class="leg-icon fast-icon">⚡</span><span>Fast = <b>+2</b></span></div>
+        <div class="legend-item"><span class="leg-icon bomb-icon">💣</span><span>Bomb = <b>−3</b></span></div>
+      </div>
+      <button class="btn btn-start" id="startBtn">▶ START GAME</button>
+      <p class="overlay-tip">Click balloons before they fly away!</p>
+    </div>
+  </div>
+
+  <!-- Level Up Screen -->
+  <div class="overlay hidden" id="levelUpScreen">
+    <div class="overlay-card levelup-card">
+      <div class="overlay-emoji" id="levelUpEmoji">🚀</div>
+      <div class="levelup-badge">LEVEL UP!</div>
+      <h1 class="overlay-title levelup-title">Level <span id="newLevelNum">2</span></h1>
+      <p class="levelup-desc" id="levelUpDesc">Balloons are faster now!</p>
+      <div class="levelup-perks" id="levelUpPerks"></div>
+      <button class="btn btn-levelup" id="levelUpBtn">▶ KEEP GOING!</button>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div class="overlay hidden" id="gameOverScreen">
+    <div class="overlay-card gameover-card">
+      <div class="overlay-emoji" id="resultEmoji">🎊</div>
+      <h1 class="overlay-title">Game Over!</h1>
+      <div class="go-stats">
+        <div class="go-stat"><span class="go-stat-label">SCORE</span><span class="go-stat-val" id="finalScore">0</span></div>
+        <div class="go-stat"><span class="go-stat-label">LEVEL</span><span class="go-stat-val" id="finalLevel">1</span></div>
+      </div>
+      <p class="final-message" id="finalMessage">Great job!</p>
+      <button class="btn btn-restart" id="restartBtn">🔄 PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <!-- Floating score popups container -->
+  <div id="popups"></div>
+
+  <script src="js/navbar.js"></script>
+  <script src="js/balloon-pop-party.js"></script>
+<script>
+function goBackToGames() {
+  localStorage.setItem('startTab', 'games');
+  window.location.href = "app.html";
+}
+
+function mirrorGameHeaderScore(sourceId, targetId, prefix) {
+  const source = document.getElementById(sourceId);
+  const target = document.getElementById(targetId);
+  if (!source || !target) return;
+  const sync = () => {
+    target.textContent = `${prefix}${String(source.textContent || '0').trim()}`;
+  };
+  sync();
+  new MutationObserver(sync).observe(source, { childList: true, subtree: true, characterData: true });
+}
+
+window.addEventListener('load', () => {
+  mirrorGameHeaderScore('score', 'balloon-topbar-score', '⭐ ');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="KiddoTube - Games Hub - Fun learning for kids">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiddoTube 🎮 — Games Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/games.css">
+</head>
+<body data-nav-page="games" data-nav-home-href="app.html" data-nav-brand-href="app.html" data-nav-search-href="app.html" data-nav-profile-href="profile.html">
+
+<canvas id="stars-canvas"></canvas>
+<div data-site-navbar></div>
+
+<!-- HERO -->
+<section class="gh-hero">
+  <div>
+    <h1 class="gh-title">🎮 Games Hub</h1>
+    <p class="gh-sub">Pick a game and start playing! Quizzes, puzzles, memory matches and more fun await.</p>
+  </div>
+  <div class="gh-hero-emoji">🕹️</div>
+</section>
+
+<!-- BUILT-IN GAMES -->
+<section class="gh-section">
+  <div class="section-inner">
+    <h2 class="section-title">🌟 All Games</h2>
+    <p class="section-sub">Tap any game card to start playing!</p>
+    <div class="gh-grid" id="gh-grid"></div>
+  </div>
+</section>
+
+<!-- GAME OVERLAY (for quiz/memory/draw) -->
+<div class="game-overlay hidden" id="game-overlay">
+  <div class="game-topbar">
+    <div class="game-back" id="go-back" onclick="closeGameOverlay()">← Back</div>
+    <div class="game-title-bar" id="go-title">Game</div>
+    <div class="game-score-bar" id="go-score">⭐ 0</div>
+  </div>
+  <div class="game-content" id="go-content"></div>
+</div>
+
+<script src="js/navbar.js"></script>
+<script src="js/app.js"></script>
+<script>
+/* ── Games Hub page logic ── */
+const HUB_GAMES = [
+  { id:'quiz-animals',       title:'Animal Quiz',        emoji:'🐶', badge:'easy',   type:'quiz',   topic:'animals',  desc:'Can you name these animals?' },
+  { id:'quiz-numbers',       title:'Number Quiz',        emoji:'🔢', badge:'easy',   type:'quiz',   topic:'numbers',  desc:'Test your maths skills!' },
+  { id:'quiz-colors',        title:'Colour Quiz',        emoji:'🌈', badge:'easy',   type:'quiz',   topic:'colors',   desc:'Match the right colours!' },
+  { id:'quiz-shapes',        title:'Shape Quiz',         emoji:'🔷', badge:'medium', type:'quiz',   topic:'shapes',   desc:'Do you know your shapes?' },
+  { id:'memory-1',           title:'Memory Match',       emoji:'🃏', badge:'medium', type:'memory', topic:'',         desc:'Flip cards and find pairs!' },
+  { id:'draw-1',             title:'Drawing Board',      emoji:'🎨', badge:'easy',   type:'draw',   topic:'',         desc:'Draw anything you like!' },
+  { id:'puzzle-pals',        title:'Puzzle Pals',        emoji:'🧩', badge:'hard',   type:'link',   path:'puzzle.html',         desc:'Solve jigsaw puzzles!' },
+  { id:'memory-match-15',    title:'Memory Match 15',    emoji:'🃏', badge:'hard',   type:'link',   path:'memory-match-15.html',desc:'15 levels of memory fun!' },
+  { id:'balloon-pop-party',  title:'Balloon Pop Party',  emoji:'🎈', badge:'hard',   type:'link',   path:'balloon-pop-party.html',desc:'Pop balloons, beat levels!' },
+  { id:'shape-match',        title:'Shape Match',        emoji:'🔷', badge:'medium', type:'link',   path:'shape-match.html',    desc:'Drag shapes to their zones!' },
+  { id:'snake',              title:'Snake Game',         emoji:'🐍', badge:'medium', type:'link',   path:'snake.html',          desc:'Classic snake — avoid walls!' },
+];
+
+const BADGE_COLOR = { easy:'#1DD1A1', medium:'#FF9F43', hard:'#FF6B6B' };
+
+function buildGrid() {
+  const grid = document.getElementById('gh-grid');
+  grid.innerHTML = HUB_GAMES.map(g => `
+    <div class="gh-card" onclick="launchGame('${g.id}')" style="--gc:${BADGE_COLOR[g.badge]||'#aaa'}">
+      <div class="gh-card-glow"></div>
+      <div class="gh-card-emoji">${g.emoji}</div>
+      <div class="gh-card-info">
+        <div class="gh-card-title">${g.title}</div>
+        <div class="gh-card-desc">${g.desc}</div>
+        <span class="gh-badge ${g.badge}">${g.badge}</span>
+      </div>
+      <div class="gh-card-play">▶</div>
+    </div>`).join('');
+}
+
+function launchGame(id) {
+  const g = HUB_GAMES.find(x => x.id === id);
+  if (!g) return;
+  if (g.type === 'link' && g.path) {
+    window.location.href = g.path;
+    return;
+  }
+  /* inline game overlay */
+  state.currentGame = g;
+  document.getElementById('go-title').textContent = g.title;
+  document.getElementById('go-score').textContent = '⭐ 0';
+  document.getElementById('game-overlay').classList.remove('hidden');
+  if (g.type === 'quiz')   startQuiz(g.topic);
+  if (g.type === 'memory') startMemory();
+  if (g.type === 'draw')   startDraw();
+}
+
+function closeGameOverlay() {
+  document.getElementById('game-overlay').classList.add('hidden');
+  document.getElementById('go-content').innerHTML = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeGameOverlay();
+});
+
+/* Init */
+window.addEventListener('load', () => {
+  initStars();
+  /* Load data so quiz/memory/draw work */
+  if (!window.QUIZ_DATA) window.QUIZ_DATA = {};
+  buildGrid();
+});
+</script>
+</body>
+</html>

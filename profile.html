@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="KiddoTube - Profile - Fun learning for kids">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiddoTube - Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/profile.css">
+</head>
+<body data-nav-page="profile" data-nav-search-href="app.html" data-nav-home-href="app.html" data-nav-brand-href="app.html" data-nav-profile-href="profile.html" data-nav-profile-tab="">
+<div data-site-navbar></div>
+
+<main class="profile-page">
+  <section class="profile-hero-card">
+    <div class="profile-hero-main">
+      <span class="profile-badge">My KiddoTube Profile</span>
+      <div class="profile-head">
+        <div class="page-avatar" id="profile-avatar">&#128035;</div>
+        <div class="profile-identity">
+          <h1 id="profile-name">Little Star</h1>
+          <p id="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6804011c1c040d1b1c091a2803010c0c071c1d0a0d460e1d06">[email&#160;protected]</a></p>
+          <p id="profile-member">Member since today</p>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="profile-action primary" id="profile-home">Home</button>
+        <button class="profile-action" id="profile-library">Open Library</button>
+        <button class="profile-action danger" id="profile-logout">Logout</button>
+      </div>
+    </div>
+
+    <div class="profile-hero-side">
+      <h2>Latest Activity</h2>
+      <ul class="profile-list">
+        <li id="profile-last-activity">No games played yet.</li>
+        <li id="profile-last-upload">No upload yet.</li>
+        <li id="profile-last-login">Last login just now.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="profile-panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Your Stats</h2>
+        <p>All your learning progress in one place.</p>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <article class="stat-card">
+        <span class="stat-icon">&#11088;</span>
+        <strong id="profile-stars">0</strong>
+        <span>Stars earned</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">&#127909;</span>
+        <strong id="profile-watched">0</strong>
+        <span>Videos watched</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">&#9989;</span>
+        <strong id="profile-tasks">0</strong>
+        <span>Tasks done</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">&#127918;</span>
+        <strong id="profile-games">0</strong>
+        <span>Games played</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="profile-grid">
+    <article class="profile-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Game Progress</h2>
+          <p>See how far you have gone in every section.</p>
+        </div>
+      </div>
+      <div class="progress-list" id="progress-list"></div>
+    </article>
+
+    <article class="profile-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Quick Links</h2>
+          <p>Jump back into your favorite sections.</p>
+        </div>
+      </div>
+
+      <div class="quick-links">
+        <button class="quick-link" data-target="app.html" data-tab="home">Home Feed</button>
+        <button class="quick-link" data-target="app.html" data-tab="tasks">Tasks</button>
+        <button class="quick-link" data-target="app.html" data-tab="homework">Homework</button>
+        <button class="quick-link" data-target="upload.html">Upload</button>
+        <button class="quick-link" data-target="Learn.html">Learning Page</button>
+      </div>
+
+      <div class="account-meta" id="account-meta"></div>
+     </article>
+  </section>
+</main>
+
+<script src="js/navbar.js"></script>
+<script src="js/profile.js"></script>
+</body>
+</html>

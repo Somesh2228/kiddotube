@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="KiddoTube - Upload - Fun learning for kids">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiddoTube - Upload</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/upload.css">
+</head>
+<body data-nav-page="upload" data-nav-search-href="app.html" data-nav-home-href="app.html" data-nav-brand-href="app.html" data-nav-profile-href="profile.html" data-nav-profile-tab="">
+<div data-site-navbar></div>
+
+<main class="upload-page">
+  <section class="upload-hero">
+    <div class="upload-hero-copy">
+      <span class="upload-chip">Upload Page</span>
+      <h1>Bring your files into KiddoTube</h1>
+      <p>Upload an image, video, worksheet, or school project and keep the latest file saved on your profile.</p>
+
+      <div class="upload-toolbar">
+        <button class="hero-btn primary" type="button" id="upload-pick-btn">Choose File</button>
+        <button class="hero-btn" type="button" id="upload-clear-btn">Clear</button>
+        <button class="hero-btn" type="button" id="upload-home-btn">Home</button>
+        <button class="hero-btn" type="button" id="upload-profile-btn">Profile</button>
+      </div>
+    </div>
+
+    <div class="upload-summary">
+      <h2>Latest Upload</h2>
+      <div class="upload-summary-card">
+        <strong id="latest-upload-name">Nothing uploaded yet</strong>
+        <span id="latest-upload-meta">Choose a file to save it to your account.</span>
+      </div>
+      <div class="upload-summary-card">
+        <strong>Quick Jump</strong>
+        <span>Use the buttons above to go back to Home or open your Profile.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="upload-panel">
+    <input id="upload-file" class="upload-file" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.txt">
+
+    <div class="upload-status" id="upload-status">No file selected yet.</div>
+
+    <div class="upload-preview" id="upload-preview">
+      <div class="upload-empty">
+        <span class="upload-empty-icon">&#128228;</span>
+        <h3>Ready to upload</h3>
+        <p>Select a file to preview it here and save it to this account.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="js/navbar.js"></script>
+<script src="js/upload.js"></script>
+</body>
+</html>

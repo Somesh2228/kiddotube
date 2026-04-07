@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiddoTube 📚 — Watch &amp; Learn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-nav-page="app" data-nav-home-href="app.html" data-nav-brand-href="app.html" data-nav-search-href="app.html" data-nav-profile-href="app.html" data-nav-profile-tab="profile" data-nav-mobile-menu="sidebar">
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA STORE — All app data lives here as HTML.
+════════════════════════════════════════════════════════ -->
+
+<div id="data-cats" hidden>
+  <div data-id="all"     data-label="🌟 All"    data-color="#FF6B6B"></div>
+  <div data-id="abc"     data-label="🔤 ABC"    data-color="#FF6B6B"></div>
+  <div data-id="hindi"   data-label="🇮🇳 अ आ इ" data-color="#FF9F43"></div>
+  <div data-id="numbers" data-label="🔢 123"    data-color="#48DBFB"></div>
+  <div data-id="poems"   data-label="🎵 Poem"   data-color="#FF9FF3"></div>
+  <div data-id="stories" data-label="📖 Story"  data-color="#54A0FF"></div>
+</div>
+
+<div id="data-videos" hidden>
+  <div data-id="1"  data-title="ABC Song for Kids"          data-emoji="🔤" data-dur="3:38" data-views="12M" data-cat="abc"     data-short="false" data-bg="#FFE0E0" data-src=""></div>
+  <div data-id="2"  data-title="Hindi Varnamala - अ से अनार" data-emoji="🇮🇳" data-dur="3:06" data-views="8M"  data-cat="hindi"   data-short="false" data-bg="#FFF0E0" data-src="videos/vowels-long.mp4"></div>
+  <div data-id="3"  data-title="Bhedia Story"           data-emoji="🔢" data-dur="12:20" data-views="15M" data-cat="stories" data-short="false" data-bg="#E0F8FF" data-src=""></div>
+  <div data-id="4"  data-title="Twinkle Twinkle Little Star" data-emoji="⭐" data-dur="1:36" data-views="22M" data-cat="poems"   data-short="false" data-bg="#FFE0FF" data-src=""></div>
+  <div data-id="5"  data-title="The Clever Rabbit Story"     data-emoji="🐇" data-dur="3:22" data-views="6M"  data-cat="stories" data-short="false" data-bg="#E0E8FF" data-src=""></div>
+  <div data-id="6"  data-title="Colors Song for Babies"      data-emoji="🌈" data-dur="5:32" data-views="18M" data-cat="abc"     data-short="false" data-bg="#E8FFE0" data-src=""></div>
+  <div data-id="7"  data-title="Little Krishna Story"            data-emoji="🦈" data-dur="22:55" data-views="30M" data-cat="stories"   data-short="false" data-bg="#E0F8FF" data-src=""></div>
+  <div data-id="8"  data-title="Ajj Mangalvar Hai"             data-emoji="🔷" data-dur="4:03" data-views="9M"  data-cat="numbers" data-short="false" data-bg="#FFE8E0" data-src="videos/4621773dade01da94e5b7b20d56d447b_720w.mp4"></div>
+  <div data-id="14" data-title="M Tota M Totar"              data-emoji="🦜" data-dur="2:12" data-views="New" data-cat="hindi"   data-short="false" data-bg="#FFE7B8" data-src="videos/m-tota-story.mp4"></div>
+  <div data-id="15" data-title="Jadui Aalu Matar Ki Kahani"  data-emoji="🥔" data-dur="4:31" data-views="New" data-cat="stories" data-short="false" data-bg="#E7FFD9" data-src="videos/jadui-aalu-matar-ki-kahani.mp4"></div>
+  <div data-id="16" data-title="Dinosaurs Earthbound | Dinoster S1 EP22" data-emoji="🦖" data-dur="11:12" data-views="New" data-cat="stories" data-short="false" data-bg="#DDEAFF" data-src="videos/dinoster-earthbound.mp4"></div>
+  <div data-id="18" data-title="Ethan & Lily's Magical Journey" data-emoji="👑" data-dur="4:54" data-views="New" data-cat="stories" data-short="false" data-bg="#FFF0C9" data-src="videos/ethan-lily-golden-road.mp4"></div>
+  <div data-id="20" data-title="Mystery Kids Video"         data-emoji="🎁" data-dur="3:15" data-views="New" data-cat="stories" data-short="false" data-bg="#E6F0FF" data-src="videos/86a01ef5a1c14b1d875c20dceabeb5a2_720w.mp4"></div>
+
+  <div data-id="9"  data-title="ABC Reel"                    data-emoji="✨" data-dur="0:30" data-views="5M"  data-cat="abc"     data-short="true"  data-bg="#FF6B6B" data-src=""></div>
+  <div data-id="10" data-title="1-2-3 Quick Count"           data-emoji="🎯" data-dur="0:30" data-views="3M"  data-cat="numbers" data-short="true"  data-bg="#48DBFB" data-src=""></div>
+  <div data-id="11" data-title="Ajji"               data-emoji="🌟" data-dur="0:17" data-views="7M"  data-cat="poems"   data-short="true"  data-bg="#FF9FF3" data-src=""></div>
+  <div data-id="12" data-title="Poem"              data-emoji="🐢" data-dur="0:43" data-views="4M"  data-cat="poems" data-short="true"  data-bg="#54A0FF" data-src=""></div>
+  <div data-id="13" data-title="Numbers Song 1 to 10"        data-emoji="🔢" data-dur="0:34" data-views="New" data-cat="numbers" data-short="true"  data-bg="#BEEBFF" data-src="videos/numbers-song-short.mp4"></div>
+  <div data-id="17" data-title="Pinterest Short Video"       data-emoji="🎬" data-dur="0:15" data-views="New" data-cat="stories" data-short="true"  data-bg="#FFB57A" data-src="videos/pinterest-short-2.mp4"></div>
+  <div data-id="19" data-title="Klickpin Short"              data-emoji="⚡" data-dur="1:59" data-views="New" data-cat="abc"     data-short="true"  data-bg="#FFD166" data-src="videos/klickpin-short.mp4"></div>
+  <div data-id="21" data-title="Mystery Fun Reel"            data-emoji="🎉" data-dur="1:39" data-views="New" data-cat="stories" data-short="true"  data-bg="#FFD8E8" data-src="videos/4621773.mp4"></div>
+  <div data-id="22" data-title="Quick Surprise Reel"         data-emoji="⚡" data-dur="0:16" data-views="New" data-cat="stories" data-short="true"  data-bg="#D9FFF2" data-src="videos/c7420204759436ba81bad4319dd63a1f_720w.mp4"></div>
+</div>
+
+<div id="data-tasks" hidden>
+  <div data-id="1" data-t="Watch ABC Song"   data-s="Learning English" data-emoji="🔤" data-done="false"></div>
+  <div data-id="2" data-t="Count 1 to 20"    data-s="Math Practice"    data-emoji="🔢" data-done="false"></div>
+  <div data-id="3" data-t="Listen to a Poem" data-s="Creative Arts"    data-emoji="🎵" data-done="true"></div>
+</div>
+
+<div id="data-hw" hidden>
+  <div data-id="1" data-t="Write A-Z"          data-s="Due Tomorrow" data-emoji="✏️" data-done="false"></div>
+  <div data-id="2" data-t="Draw 3 Shapes"      data-s="Due Friday"   data-emoji="🔷" data-done="false"></div>
+  <div data-id="3" data-t="Learn Hindi Vowels" data-s="Due Monday"   data-emoji="🇮🇳" data-done="true"></div>
+</div>
+
+<div id="data-quiz" hidden>
+  <div data-topic="animals" data-q='Which animal says "Moo"? 🐾' data-emoji="🐾"
+       data-opts='["🐮 Cow","🐷 Pig","🐑 Sheep","🐴 Horse"]' data-ans="0"></div>
+  <div data-topic="animals" data-q="Which animal has a trunk?"   data-emoji="🦣"
+       data-opts='["🦁 Lion","🐘 Elephant","🐊 Croc","🦒 Giraffe"]' data-ans="1"></div>
+  <div data-topic="animals" data-q="What does a frog say?"       data-emoji="🐸"
+       data-opts='["Woof","Meow","Ribbit","Moo"]' data-ans="2"></div>
+  <div data-topic="animals" data-q="Which animal can fly?"       data-emoji="🦅"
+       data-opts='["🐠 Fish","🐢 Turtle","🦅 Eagle","🐍 Snake"]' data-ans="2"></div>
+  <div data-topic="animals" data-q="King of the jungle?"         data-emoji="👑"
+       data-opts='["🐯 Tiger","🦁 Lion","🐻 Bear","🐆 Leopard"]' data-ans="1"></div>
+  <div data-topic="numbers" data-q="What is 2 + 3?"        data-emoji="➕"
+       data-opts='["4","5","6","7"]' data-ans="1"></div>
+  <div data-topic="numbers" data-q="What is 10 - 4?"       data-emoji="➖"
+       data-opts='["5","7","6","8"]' data-ans="2"></div>
+  <div data-topic="numbers" data-q="What is 3 × 3?"        data-emoji="✖️"
+       data-opts='["6","7","9","8"]' data-ans="2"></div>
+  <div data-topic="numbers" data-q="Which is the biggest?" data-emoji="📊"
+       data-opts='["12","9","7","15"]' data-ans="3"></div>
+  <div data-topic="numbers" data-q="Half of 10 is?"        data-emoji="÷"
+       data-opts='["4","6","5","3"]' data-ans="2"></div>
+  <div data-topic="colors" data-q="What colour is the sky?"       data-emoji="☁️"
+       data-opts='["Red","Blue","Green","Yellow"]' data-ans="1"></div>
+  <div data-topic="colors" data-q="What colour is a ripe banana?" data-emoji="🍌"
+       data-opts='["Purple","Orange","Yellow","Pink"]' data-ans="2"></div>
+  <div data-topic="colors" data-q="What colour is grass?"         data-emoji="🌿"
+       data-opts='["Brown","Green","Blue","Grey"]' data-ans="1"></div>
+  <div data-topic="colors" data-q="What colour is a strawberry?"  data-emoji="🍓"
+       data-opts='["Red","Pink","Orange","Purple"]' data-ans="0"></div>
+  <div data-topic="colors" data-q="What colour is the sun?"       data-emoji="☀️"
+       data-opts='["White","Blue","Yellow","Green"]' data-ans="2"></div>
+  <div data-topic="shapes" data-q="How many sides does a triangle have?" data-emoji="🔺"
+       data-opts='["2","3","4","5"]' data-ans="1"></div>
+  <div data-topic="shapes" data-q="A ball is shaped like a…"             data-emoji="⚽"
+       data-opts='["Cube","Cone","Sphere","Cylinder"]' data-ans="2"></div>
+  <div data-topic="shapes" data-q="A pizza slice looks like a…"          data-emoji="🍕"
+       data-opts='["Square","Circle","Rectangle","Triangle"]' data-ans="3"></div>
+  <div data-topic="shapes" data-q="How many corners in a square?"        data-emoji="🔲"
+       data-opts='["2","3","5","4"]' data-ans="3"></div>
+  <div data-topic="shapes" data-q="Which is a round shape?"              data-emoji="🟡"
+       data-opts='["Square","Triangle","Rectangle","Circle"]' data-ans="3"></div>
+</div>
+
+<div id="data-games" hidden>
+  <div data-id="quiz-animals"  data-title="Animal Quiz"   data-emoji="🐶" data-badge="easy"   data-type="quiz"   data-topic="animals"></div>
+  <div data-id="quiz-numbers"  data-title="Number Quiz"   data-emoji="🔢" data-badge="easy"   data-type="quiz"   data-topic="numbers"></div>
+  <div data-id="quiz-colors"   data-title="Colour Quiz"   data-emoji="🌈" data-badge="easy"   data-type="quiz"   data-topic="colors"></div>
+  <div data-id="quiz-shapes"   data-title="Shape Quiz"    data-emoji="🔷" data-badge="medium" data-type="quiz"   data-topic="shapes"></div>
+  <div data-id="memory-1"      data-title="Memory Match"  data-emoji="🃏" data-badge="medium" data-type="memory" data-topic=""></div>
+  <div data-id="draw-1"        data-title="Drawing Board" data-emoji="🎨" data-badge="easy"   data-type="draw"   data-topic=""></div>
+  <div data-id="puzzle-pals"   data-title="Puzzle Pals"   data-emoji="🧩" data-badge="hard"   data-type="link"   data-topic="" data-path="puzzle.html"></div>
+  <div data-id="memory-match-15" data-title="Memory Match 15" data-emoji="🃏" data-badge="hard" data-type="link" data-topic="" data-path="memory-match-15.html"></div>
+  <div data-id="balloon-pop-party" data-title="Balloon Pop Party" data-emoji="🎈" data-badge="hard" data-type="link" data-topic="" data-path="balloon-pop-party.html"></div>
+  <div data-id="shape-match" data-title="Shape Match" data-emoji="🔷" data-badge="medium" data-type="link" data-topic="" data-path="shape-match.html"></div>
+</div>
+
+
+
+<div class="page active" id="page-book">
+  <div class="book-scene" id="book-scene" onclick="openBook()">
+    <div class="sparkle" style="animation-delay:0s">⭐</div>
+    <div class="sparkle" style="animation-delay:1s">✨</div>
+    <div class="sparkle" style="animation-delay:2s">🌟</div>
+    <div class="sparkle" style="animation-delay:3s">💫</div>
+    <div class="book-3d">
+      <div class="book-spine"></div>
+      <div class="book-front">
+        <div class="book-logo-emoji">📚</div>
+        <div class="book-title-text">KiddoTube</div>
+        <div class="book-subtitle">Learn &amp; Play!</div>
+        <div class="tap-hint">✨ Tap to Open ✨</div>
+      </div>
+    </div>
+  </div>
+  <div class="book-hint-row">👆 Click the book to begin!</div>
+</div>
+
+<div id="opening-overlay" class="hidden">
+  <div class="open-book-wrap opening-fade">
+    <div class="open-page left"></div>
+    <div class="open-page right"></div>
+  </div>
+</div>
+
+<div class="page" id="page-login">
+  <div class="login-card" id="login-card">
+    <div class="login-avatar-big" id="login-avatar-display">🐣</div>
+    <div class="login-card-title">Hello, Little One! 👋</div>
+    <div class="login-card-sub">Choose your avatar &amp; enter your name</div>
+    <div class="avatar-row" id="avatar-row">
+      <span class="avatar-opt sel" data-av="🐣" onclick="pickAvatar(this)">🐣</span>
+      <span class="avatar-opt"     data-av="🐸" onclick="pickAvatar(this)">🐸</span>
+      <span class="avatar-opt"     data-av="🦊" onclick="pickAvatar(this)">🦊</span>
+      <span class="avatar-opt"     data-av="🐼" onclick="pickAvatar(this)">🐼</span>
+      <span class="avatar-opt"     data-av="🦄" onclick="pickAvatar(this)">🦄</span>
+    </div>
+    <input class="login-input" id="login-name" type="text" placeholder="Your Name..." maxlength="20" autocomplete="username">
+    <input class="login-input" id="login-pass" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">Let's Go! 🚀</button>
+  </div>
+</div>
+
+<div class="page" id="page-app">
+
+  <!-- TOP BAR -->
+  <div data-site-navbar></div>
+  <button class="mobile-sidebar-backdrop" id="mobile-sidebar-backdrop" type="button" aria-label="Close menu" onclick="closeMobileSidebar()"></button>
+
+  <!-- MAIN ROW -->
+  <div class="main-row">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sb-logo">📚 KiddoTube</div>
+      <div class="sb-item active" data-tab="home"     onclick="goTab('home')">    <span class="sb-icon">🏠</span> Home</div>
+      <div class="sb-item"         data-tab="learn"   onclick="openLearnPage()">  <span class="sb-icon">📖</span> Learn</div>
+      <div class="sb-item"        data-tab="tasks"    onclick="goTab('tasks')">   <span class="sb-icon">✅</span> Tasks</div>
+      <div class="sb-item"        data-tab="homework" onclick="goTab('homework')"><span class="sb-icon">📝</span> Homework</div>
+      <div class="sb-item"        data-tab="games"    onclick="goTab('games')">   <span class="sb-icon">🎮</span> Games</div>
+      <div class="sb-spacer"></div>
+      <div class="sb-divider"></div>
+      <div class="sb-item" onclick="openProfilePage()">
+        <span class="sb-icon" id="sb-user-icon">🐣</span>
+        <span id="sb-user-name">Profile</span>
+      </div>
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div class="content-area" id="content-area">
+
+      <!-- HOME PANEL -->
+      <div class="panel visible" id="panel-home">
+        <div class="cat-scroll" id="cat-scroll"></div>
+        <div class="results-bar" id="results-bar-home"></div>
+        <div class="sec-title">📱 Reels</div>
+        <div class="reels-row" id="reels-row"></div>
+        <div class="sec-title mt16">🎬 Long Videos</div>
+        <div class="video-grid" id="home-long-grid"></div>
+      </div>
+
+      <!-- SHORTS PANEL -->
+      <div class="panel" id="panel-shorts">
+        <div class="sec-title">📱 Reels</div>
+        <div class="results-bar" id="results-bar-shorts"></div>
+        <div class="reels-row" id="shorts-reels-row"></div>
+        <div class="sec-title mt16">🎬 Related Long Videos</div>
+        <div class="video-grid" id="shorts-long-grid"></div>
+      </div>
+
+      <!-- LONG PANEL -->
+      <div class="panel" id="panel-long">
+        <div class="sec-title">🎬 All Long Videos</div>
+        <div class="results-bar" id="results-bar-long"></div>
+        <div class="video-grid" id="long-grid"></div>
+      </div>
+
+      <!-- GAMES PANEL -->
+      <div class="panel" id="panel-games">
+        <div class="games-hero">
+          <div class="games-hero-emoji">🎮</div>
+          <div class="games-hero-text">
+            <h2>Fun &amp; Learn Games!</h2>
+            <p>Play quizzes, memory &amp; drawing!</p>
+          </div>
+          <a class="games-hub-link">🕹️ Full Games Hub </a>
+        </div>
+        <div class="sec-title">🕹️ Pick a Game</div>
+        <div class="games-grid" id="games-grid"></div>
+      </div>
+
+      <!-- UPLOAD PANEL -->
+      <div class="panel" id="panel-upload">
+        <div class="upload-shell">
+          <div class="upload-card">
+            <div class="upload-badge">Upload Corner</div>
+            <h2>Upload your fun learning files</h2>
+            <p class="upload-copy">
+              Pick an image, video, worksheet, or creative project from your device and preview it here.
+            </p>
+
+            <input id="upload-input" class="upload-input" type="file"
+                   accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.txt"
+                   onchange="handleUploadSelection(event)">
+
+            <div class="upload-actions">
+              <button class="upload-primary" type="button" onclick="triggerUploadPicker()">Choose File</button>
+              <button class="upload-secondary" type="button" onclick="clearUploadSelection()">Clear</button>
+            </div>
+
+            <div class="upload-status" id="upload-status">No file selected yet. Pick something fun to upload.</div>
+            <div class="upload-preview" id="upload-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE PANEL -->
+      <div class="panel" id="panel-profile">
+        <div class="profile-hero">
+          <span class="profile-emoji" id="p-emoji">🐣</span>
+          <div class="profile-name"  id="p-name">Little Star</div>
+          <div class="profile-email" id="p-email"></div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-num" id="stat-watched">0</div><div class="stat-label">Watched</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-tasks">0</div><div class="stat-label">Tasks Done</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-stars">⭐0</div><div class="stat-label">Stars</div></div>
+        </div>
+        <!-- Progress card from saved account -->
+        <div id="profile-account-info" style="
+          display:none;margin:16px 0 0;background:rgba(255,255,255,0.88);
+          border-radius:20px;padding:18px 20px;
+          border:1px solid rgba(255,216,160,0.9);
+          box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+          <div style="font-family:'Fredoka One',cursive;font-size:15px;color:var(--red);margin-bottom:10px;">📊 Your Progress</div>
+          <div id="profile-progress-body" style="font-size:13px;font-weight:700;color:#876957;line-height:2.1;"></div>
+        </div>
+        <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+      </div>
+
+      <!-- TASKS PANEL -->
+      <div class="panel" id="panel-tasks">
+        <div class="sec-title">✅ My Tasks</div>
+        <div class="task-list" id="task-list"></div>
+      </div>
+
+      <!-- HOMEWORK PANEL -->
+      <div class="panel" id="panel-homework">
+        <div class="sec-title">📝 Homework</div>
+        <div class="task-list" id="hw-list"></div>
+      </div>
+
+    </div><!-- end content-area -->
+  </div><!-- end main-row -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav compact-bottom-nav">
+    <button class="bn-btn bn-btn-upload" type="button" onclick="openUploadPage()"><span class="bn-icon">&#128228;</span><span>Upload</span></button>
+    <button class="bn-btn bn-btn-profile-link" type="button" onclick="openProfilePage()"><span class="bn-icon">&#128100;</span><span>Profile</span></button>
+    <button class="bn-btn active" data-tab="home"    onclick="goTab('home')">   <span class="bn-icon">🏠</span><span>Home</span></button>
+    <button class="bn-btn"        data-tab="shorts"  onclick="goTab('shorts')"> <span class="bn-icon">📱</span><span>Shorts</span></button>
+    <button class="bn-btn"        data-tab="long"    onclick="goTab('long')">   <span class="bn-icon">🎬</span><span>Videos</span></button>
+    <button class="bn-btn"        data-tab="games"   onclick="goTab('games')">  <span class="bn-icon">🎮</span><span>Games</span></button>
+    <button class="bn-btn"        data-tab="profile" onclick="goTab('profile')"><span class="bn-icon">👤</span><span>Profile</span></button>
+  </div>
+
+</div><!-- end #page-app -->
+
+<div class="page" id="page-viddetail" style="flex-direction:column;">
+  <div class="topbar">
+    <div class="vd-back" onclick="closeVideoDetail()">← Back</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:18px;color:var(--red);flex:1;text-align:center;">KiddoTube</div>
+  </div>
+  <div class="vd-scroll">
+    <div class="vd-layout">
+      <div class="vd-main">
+        <div class="vd-player-shell" id="vd-player-panel">
+          <div class="vd-player" id="vd-player" onclick="toggleVideoPlay()">
+            <div class="play-circle" id="vd-play-btn">▶</div>
+          </div>
+          <div class="vd-controls">
+            <button class="vd-control" id="vd-prev-control" type="button" onclick="playPreviousVideo()">⏮ Prev</button>
+            <button class="vd-control primary" id="vd-play-control" type="button" onclick="playVideo()">▶ Play</button>
+            <button class="vd-control" id="vd-pause-control" type="button" onclick="pauseVideo()">⏸ Pause</button>
+            <button class="vd-control" id="vd-next-control" type="button" onclick="playNextVideo()">Next ⏭</button>
+            <button class="vd-control" id="vd-restart-control" type="button" onclick="restartVideo()">↺ Restart</button>
+            <button class="vd-control" id="vd-mute-control" type="button" onclick="toggleMuteVideo()">🔊 Sound</button>
+            <button class="vd-control" id="vd-fullscreen-control" type="button" onclick="toggleVideoFullscreen()">⛶ Full Screen</button>
+          </div>
+          <div class="vd-progress-row">
+            <span class="vd-time" id="vd-time-current">0:00</span>
+            <div class="vd-progress-track">
+              <div class="vd-progress-fill" id="vd-progress-fill"></div>
+            </div>
+            <span class="vd-time" id="vd-time-total">0:00</span>
+          </div>
+        </div>
+        <div class="vd-mobile-next" id="vd-mobile-next"></div>
+
+        <div class="vd-meta">
+          <div class="vd-title" id="vd-title">Video Title</div>
+          <div class="vd-info" id="vd-info">👁 0 views · ⏱ 0:00</div>
+        </div>
+
+        <div class="vd-channel-row">
+          <div class="vd-channel">
+            <div class="vd-channel-avatar" id="vd-channel-avatar">🐣</div>
+            <div class="vd-channel-copy">
+              <strong id="vd-channel-name">KiddoTube Learning</strong>
+              <span>Fun lessons and songs for kids</span>
+            </div>
+          </div>
+          <button class="vd-subscribe" type="button">Subscribe</button>
+          <div class="vd-action-pills">
+            <button class="vd-action-pill" type="button">👍 Like</button>
+            <button class="vd-action-pill" type="button">↗ Share</button>
+            <button class="vd-action-pill" type="button">💾 Save</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="vd-sidebar">
+        <div class="vd-related-wrap">
+          <div class="vd-sidebar-next" id="vd-sidebar-next"></div>
+          <div class="vd-chip-row">
+            <button class="vd-chip active" type="button">All</button>
+            <button class="vd-chip" type="button">Songs</button>
+            <button class="vd-chip" type="button">Related</button>
+            <button class="vd-chip" type="button">Stories</button>
+          </div>
+          <div class="sec-title">Related Videos</div>
+          <div class="vd-related" id="vd-related"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="bottom-nav compact-bottom-nav">
+    <button class="bn-btn bn-btn-upload" type="button" onclick="openUploadPage()"><span class="bn-icon">&#128228;</span><span>Upload</span></button>
+    <button class="bn-btn bn-btn-profile-link" type="button" onclick="openProfilePage()"><span class="bn-icon">&#128100;</span><span>Profile</span></button>
+    <button class="bn-btn" onclick="closeVideoDetail();goTab('home')">   <span class="bn-icon">🏠</span><span>Home</span></button>
+    <button class="bn-btn" onclick="closeVideoDetail();goTab('shorts')"> <span class="bn-icon">📱</span><span>Shorts</span></button>
+    <button class="bn-btn" onclick="closeVideoDetail();goTab('long')">   <span class="bn-icon">🎬</span><span>Videos</span></button>
+    <button class="bn-btn" onclick="closeVideoDetail();goTab('games')">  <span class="bn-icon">🎮</span><span>Games</span></button>
+    <button class="bn-btn" onclick="closeVideoDetail();goTab('profile')"><span class="bn-icon">👤</span><span>Profile</span></button>
+  </div>
+</div>
+
+<div class="page" id="page-short" style="flex-direction:column;">
+  <div class="short-stage">
+    <div class="short-phone">
+      <div class="short-screen" id="short-screen">
+        <video class="short-media hidden" id="short-media" playsinline loop preload="metadata"></video>
+        <span id="short-emoji" style="position:relative;z-index:1;transition:transform 0.3s">🌟</span>
+        <div class="short-close" onclick="closeShort()">✕</div>
+        <div class="short-chip">Short Reel</div>
+        <div class="short-title-overlay">
+          <h3 id="short-ttl">Short Title</h3>
+          <p id="short-views">👁 0 views</p>
+          <div class="short-progress-track">
+            <div class="short-progress-fill" id="short-progress-fill"></div>
+          </div>
+        </div>
+      </div>
+      <div class="short-bottom">
+        <div class="short-counter-wrap">
+          <div class="short-counter" id="short-counter">1 / 4</div>
+          <div class="short-swipe-hint">Swipe or scroll up for next reel, down for previous</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-game" style="flex-direction:column;">
+  <div class="game-topbar">
+    <div class="game-back" onclick="closeGame()">← Back</div>
+    <div class="game-title-bar" id="game-title-bar">Game</div>
+    <div class="game-score-bar" id="game-score-bar">⭐ 0</div>
+  </div>
+  <div class="game-content" id="game-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════════ -->
+<script src="js/navbar.js"></script>
+<script src="js/app.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════
+   LOGIN GUARD — redirect to login.html if no valid session
+══════════════════════════════════════════════════════ */
+(function() {
+  const session  = JSON.parse(localStorage.getItem('kiddotube_session')  || 'null');
+  const accounts = JSON.parse(localStorage.getItem('kiddotube_accounts') || '{}');
+  if (!session || !accounts[session.name]) {
+    // Not logged in — go to login page
+    window.location.replace('login.html');
+  }
+})();
+
+/* ══════════════════════════════════════════════════════
+   STORAGE HELPERS
+══════════════════════════════════════════════════════ */
+function getKTSession()      { return JSON.parse(localStorage.getItem('kiddotube_session')  || 'null'); }
+function getKTAccounts()     { return JSON.parse(localStorage.getItem('kiddotube_accounts') || '{}');  }
+function saveKTAccounts(a)   { localStorage.setItem('kiddotube_accounts', JSON.stringify(a));          }
+
+/* ══════════════════════════════════════════════════════
+   PAGE INIT — runs after app.js DOMContentLoaded
+══════════════════════════════════════════════════════ */
+window.addEventListener('load', function() {
+  (window.sharedNavbarReady || Promise.resolve()).then(() => {
+  const session  = getKTSession();
+  const accounts = getKTAccounts();
+  if (!session || !accounts[session.name]) return; // guard (redirect already fired)
+
+  const acc = accounts[session.name];
+
+  /* Populate app state from saved account */
+  state.avatar   = acc.avatar   || '🐣';
+  state.userName = session.name || 'Little Star';
+
+  /* Handle startTab from index.html feature-card links */
+  const _startTab = localStorage.getItem('startTab');
+  if (_startTab) localStorage.removeItem('startTab');
+
+  /* Skip book + login on return visits — go straight to app */
+  showPage('page-app');
+  initApp();
+
+  /* Navigate to requested tab if set */
+  if (_startTab) goTab(_startTab);
+
+  /* Populate profile with saved data */
+  refreshProfilePanel();
+  });
+});
+
+/* ══════════════════════════════════════════════════════
+   OVERRIDE doLogout — use localStorage session logout
+══════════════════════════════════════════════════════ */
+function doLogout() {
+  localStorage.removeItem('kiddotube_session');
+  window.location.href = 'login.html';
+}
+
+/* ══════════════════════════════════════════════════════
+   REFRESH PROFILE PANEL from saved account data
+══════════════════════════════════════════════════════ */
+function refreshProfilePanel() {
+  const session  = getKTSession();
+  const accounts = getKTAccounts();
+  if (!session || !accounts[session.name]) return;
+  const acc = accounts[session.name];
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  /* Topbar + sidebar */
+  set('topbar-avatar', acc.avatar || '🐣');
+  set('sb-user-icon',  acc.avatar || '🐣');
+  set('sb-user-name',  session.name);
+
+  /* Profile panel */
+  set('p-emoji',  acc.avatar || '🐣');
+  set('p-name',   session.name);
+  const emailVal = session.name.toLowerCase().replace(/\s/g,'') + '@kiddotube.fun';
+  set('p-email', emailVal);
+  const emailSpan = document.getElementById('p-email-val');
+  if(emailSpan) emailSpan.textContent = emailVal;
+  set('stat-stars',   '⭐' + (acc.stars || 0));
+  set('stat-watched', acc.videosWatched || 0);
+  const tasksDone = (acc.tasksDone || 0);
+  set('stat-tasks', tasksDone);
+
+  /* Progress details card */
+  const infoBox = document.getElementById('profile-account-info');
+  const body    = document.getElementById('profile-progress-body');
+  if (infoBox && body) {
+    infoBox.style.display = 'block';
+    const gp     = acc.gameProgress || {};
+    const cpGP   = gp['cartoon-puzzle'] || {};
+    const cpDone = Object.keys(cpGP).filter(k => cpGP[k] && cpGP[k].completed).length;
+    const ppGP   = gp['puzzle-pals'] || {};
+    const ppDone = Object.keys(ppGP).filter(k => ppGP[k] && ppGP[k].completed).length;
+    const mm15GP = gp['memory-match-15'] || {};
+    const mm15Done = Object.keys(mm15GP).filter(k => mm15GP[k] && mm15GP[k].completed).length;
+    const bppGP  = gp['balloon-pop-party'] || {};
+    const bppDone = Object.keys(bppGP).filter(k => bppGP[k] && bppGP[k].completed).length;
+    const smGP   = gp['shape-match'] || {};
+    const smDone = Object.keys(smGP).filter(k => smGP[k] && smGP[k].completed).length;
+
+    /* Count quiz/memory/draw completions */
+    const quizKeys = ['quiz-animals','quiz-numbers','quiz-colors','quiz-shapes'];
+    let quizLvDone = 0;
+    quizKeys.forEach(k => {
+      const q = gp[k] || {};
+      quizLvDone += Object.keys(q).filter(lv => q[lv] && q[lv].completed).length;
+    });
+    const memDone  = Object.keys(gp['memory-1'] || {}).filter(k => gp['memory-1'][k] && gp['memory-1'][k].completed).length;
+    const drawDone = Object.keys(gp['draw-1']   || {}).filter(k => gp['draw-1'][k]   && gp['draw-1'][k].completed).length;
+
+    const lastA   = acc.lastActivity;
+    const timeStr = lastA ? timeAgoApp(lastA.timestamp) : 'Never';
+    const lastGame = lastA ? `${lastA.game || '—'} (Level ${lastA.level || 1})` : '—';
+
+    body.innerHTML =
+      `⭐ Total stars: <strong>${acc.stars || 0}</strong><br>` +
+      `🎮 Total games played: <strong>${acc.gamesPlayed || 0}</strong><br>` +
+      `🧩 Cartoon Puzzle: <strong>${cpDone} / 10 levels done</strong><br>` +
+      `🧩 Puzzle Pals: <strong>${ppDone} / 4 levels done</strong><br>` +
+      `🃏 Memory Match 15: <strong>${mm15Done} / 15 levels done</strong><br>` +
+      `🎈 Balloon Pop Party: <strong>${bppDone} / 15 levels done</strong><br>` +
+      `🔷 Shape Match: <strong>${smDone} / 15 levels done</strong><br>` +
+      `🧠 Quiz levels done: <strong>${quizLvDone}</strong><br>` +
+      `🃏 Memory levels done: <strong>${memDone}</strong><br>` +
+      `🎨 Drawing levels done: <strong>${drawDone}</strong><br>` +
+      `🕐 Last played: <strong>${lastGame}</strong> · ${timeStr}`;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   PATCH goTab — refresh profile panel whenever opened
+══════════════════════════════════════════════════════ */
+const _origGoTab = typeof window.goTab === 'function' ? window.goTab.bind(window) : null;
+window.goTab = function(tab) {
+  if (_origGoTab) _origGoTab(tab);
+  if (tab === 'profile') refreshProfilePanel();
+};
+
+/* ══════════════════════════════════════════════════════
+   HELPER — human-readable time ago
+══════════════════════════════════════════════════════ */
+function timeAgoApp(ts) {
+  if (!ts) return 'Never';
+  const diff = Date.now() - ts;
+  const min  = Math.floor(diff / 60000);
+  const h    = Math.floor(diff / 3600000);
+  const d    = Math.floor(diff / 86400000);
+  if (min < 2)   return 'just now';
+  if (min < 60)  return `${min}m ago`;
+  if (h   < 24)  return `${h}h ago`;
+  if (d  === 1)  return 'yesterday';
+  return `${d} days ago`;
+}
+
+/* ══════════════════════════════════════════════════════
+   TRACK VIDEO WATCHES — save to account
+══════════════════════════════════════════════════════ */
+const _origOpenVideoDetail = typeof window.openVideoDetail === 'function' ? window.openVideoDetail.bind(window) : null;
+window.openVideoDetail = function(id) {
+  if (_origOpenVideoDetail) _origOpenVideoDetail(id);
+  /* Save watch count */
+  const session  = getKTSession();
+  const accounts = getKTAccounts();
+  if (!session || !accounts[session.name]) return;
+  const acc = accounts[session.name];
+  acc.videosWatched = (acc.videosWatched || 0) + 1;
+  accounts[session.name] = acc;
+  saveKTAccounts(accounts);
+};
+</script>
+</body>
+</html>

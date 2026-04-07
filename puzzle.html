@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="KiddoTube - Puzzle Pals - Fun learning for kids">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiddoTube - Puzzle Pals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/puzzle-pals.css">
+</head>
+<body class="puzzle-pals-body" data-nav-page="puzzle" data-nav-home-href="games.html" data-nav-brand-href="games.html" data-nav-search-href="app.html" data-nav-profile-href="profile.html">
+
+
+<div class="game-page-topbar">
+  <button class="game-page-topbar-back" type="button" onclick="goBackToGames()">← Back</button>
+  <div class="game-page-topbar-title">Puzzle Pals</div>
+  <div class="game-page-topbar-score" id="puzzle-topbar-score">⭐ 0</div>
+</div>
+
+<main class="puzzle-page">
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div class="blob blob4"></div>
+  </div>
+
+  <div id="app">
+    <section id="screen-home" class="screen active">
+      <div class="home-content">
+        <div class="logo-wrap">
+          <span class="logo-emoji">🧩</span>
+          <h1 class="game-title">Puzzle Pals!</h1>
+          <p class="subtitle">The cartoon jigsaw adventure for KiddoTube</p>
+        </div>
+
+        <div class="character-row" aria-hidden="true">
+          <span class="char">🐱</span>
+          <span class="char bounce2">🐸</span>
+          <span class="char bounce3">🦊</span>
+          <span class="char bounce4">🐼</span>
+        </div>
+
+        <button class="btn btn-start" id="btn-start" type="button">▶ Start Playing!</button>
+        <button class="btn btn-levels" id="btn-levels" type="button">🏆 Choose Level</button>
+        <p class="save-note" id="save-note">Play now, or log in to save stars and completed levels in your profile.</p>
+      </div>
+    </section>
+
+    <section id="screen-levels" class="screen">
+      <h2 class="section-title">Choose a Level</h2>
+      <div class="level-cards" id="level-cards"></div>
+      <button class="btn btn-back" id="btn-back-home" type="button">← Back</button>
+    </section>
+
+    <section id="screen-game" class="screen">
+      <div class="hud">
+        <button class="btn btn-sm btn-back" id="btn-back-levels" type="button">← Menu</button>
+        <div class="hud-center">
+          <span class="hud-label">Level</span>
+          <span class="hud-value" id="hud-level">1</span>
+        </div>
+        <div class="hud-center">
+          <span class="hud-label">Time</span>
+          <span class="hud-value" id="hud-timer">0:00</span>
+        </div>
+        <div class="hud-center">
+          <span class="hud-label">Score</span>
+          <span class="hud-value" id="hud-score">0</span>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <div class="preview-box">
+          <p class="preview-label">Hint</p>
+          <img id="preview-img" src="" alt="Puzzle preview">
+        </div>
+
+        <div class="puzzle-wrap">
+          <div id="puzzle-board" class="puzzle-board"></div>
+        </div>
+      </div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <span class="progress-label" id="progress-label">0% Done</span>
+      </div>
+    </section>
+
+    <section id="screen-win" class="screen">
+      <div class="win-content">
+        <div class="confetti-burst" id="confetti-burst"></div>
+        <h2 class="win-title">🎉 You Win! 🎉</h2>
+        <div class="stars-display" id="stars-display"></div>
+        <p class="win-stats" id="win-stats">⏱ 0:00 | 🏆 0 pts</p>
+        <div class="win-img-wrap">
+          <img id="win-img" src="" alt="Completed puzzle">
+        </div>
+        <div class="win-buttons">
+          <button class="btn btn-next" id="btn-next-level" type="button">Next Level ▶</button>
+          <button class="btn btn-back" id="btn-win-menu" type="button">🏠 Menu</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="js/navbar.js"></script>
+<script src="js/puzzle-pals.js"></script>
+<script>
+function goBackToGames() {
+  localStorage.setItem('startTab', 'games');
+  window.location.href = "app.html";
+}
+
+function mirrorGameHeaderScore(sourceId, targetId, prefix) {
+  const source = document.getElementById(sourceId);
+  const target = document.getElementById(targetId);
+  if (!source || !target) return;
+  const sync = () => {
+    target.textContent = `${prefix}${String(source.textContent || '0').trim()}`;
+  };
+  sync();
+  new MutationObserver(sync).observe(source, { childList: true, subtree: true, characterData: true });
+}
+
+window.addEventListener('load', () => {
+  mirrorGameHeaderScore('hud-score', 'puzzle-topbar-score', '⭐ ');
+});
+</script>
+</body>
+</html>

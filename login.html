@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiddoTube 📚 — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
+
+/* ═══════════════════════════════════════════
+   SCENE  — sky + ground split
+═══════════════════════════════════════════ */
+.scene {
+  position: fixed; inset: 0;
+  /* Sky */
+  background: radial-gradient(ellipse 120% 80% at 65% 28%,
+    #d0f0ff 0%, #a8e0f8 22%, #70c8f0 50%, #38a8e0 78%, #1888c8 100%);
+  overflow: hidden;
+}
+
+/* ── Ground ── */
+.ground {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 38%;
+  background: linear-gradient(180deg, #72cc55 0%, #58b03e 18%, #44962c 45%, #30741a 100%);
+  clip-path: ellipse(120% 68% at 55% 100%);
+  z-index: 1;
+}
+
+/* ── Clouds ── */
+.cloud {
+  position: absolute;
+  background: rgba(255,255,255,0.82);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: cloudBob ease-in-out infinite;
+}
+@keyframes cloudBob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+/* ═══════════════════════════════════════════
+   CHARACTERS  (right half)
+═══════════════════════════════════════════ */
+.characters {
+  position: absolute; right: 0; bottom: 0;
+  width: 58%; height: 92%;
+  z-index: 2; pointer-events: none;
+}
+.char {
+  position: absolute; line-height: 1;
+  filter: drop-shadow(0 18px 36px rgba(0,0,0,0.3));
+  animation: charFloat ease-in-out infinite;
+  user-select: none;
+}
+.c-main  { font-size: clamp(90px,14vw,180px); bottom:50%; left:26%; animation-duration:3.6s; }
+.c-pig   { font-size: clamp(60px,10vw,130px); bottom:20%;  left:1%;  animation-duration:4.3s; animation-delay:.65s; }
+.c-dragon{ font-size: clamp(55px,9vw,118px);  bottom:46%; right:3%; animation-duration:3.1s; animation-delay:1.1s; }
+.c-egg   { font-size: clamp(30px,5vw,62px);   bottom:26%; right:30%;animation-duration:5.2s; animation-delay:.3s; }
+
+@keyframes charFloat {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-15px) rotate(2deg); }
+}
+
+/* ── Foliage ── */
+.foliage {
+  position: absolute; bottom: 0; z-index: 3;
+  pointer-events: none; display: flex; align-items: flex-end;
+}
+.foliage.fl { left: 37%; }
+.foliage.fr { right: 0; transform: scaleX(-1); }
+.fl-leaf { font-size: clamp(36px,5.5vw,75px); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+
+/* ═══════════════════════════════════════════
+   SCROLL PANEL  (left)
+═══════════════════════════════════════════ */
+.panel-wrap {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 42%; min-width: 305px; max-width: 455px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 10; padding: 80px 14px 80px;
+}
+
+/* ── Wooden sign (title board) ── */
+.wood-sign {
+  width: 88%; max-width: 345px;
+  position: relative; z-index: 2; margin-bottom: -5px;
+  background: linear-gradient(160deg, #a87840 0%, #7c5220 45%, #583812 100%);
+  border: 4px solid #3a2008; border-radius: 14px 14px 6px 6px;
+  padding: 12px 18px 11px; text-align: center;
+  box-shadow: 0 7px 0 #271506, 0 14px 30px rgba(0,0,0,0.48),
+              inset 0 2px 0 rgba(255,255,255,0.1);
+}
+/* wood grain */
+.wood-sign::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: repeating-linear-gradient(3deg,transparent 0,transparent 9px,rgba(0,0,0,0.07) 9px,rgba(0,0,0,0.07) 10px);
+}
+/* corner screws */
+.screw {
+  position: absolute; width: 11px; height: 11px; border-radius: 50%;
+  background: radial-gradient(circle, #d8b060 0%, #906828 60%, #583c10 100%);
+  border: 1.5px solid #3a2008; box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+.screw.tl{top:7px;left:9px} .screw.tr{top:7px;right:9px}
+.screw.bl{bottom:7px;left:9px} .screw.br{bottom:7px;right:9px}
+
+.sign-title-text {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(22px,3.5vw,38px); line-height: 1.1;
+  color: #f0c050;
+  text-shadow: 2px 2px 0 #4a2800, 4px 4px 0 rgba(0,0,0,0.38),
+               0 0 20px rgba(240,192,80,0.55);
+}
+.sign-sub-text {
+  font-size: 10px; font-weight: 800; color: rgba(240,200,100,0.62);
+  letter-spacing: 3px; text-transform: uppercase; margin-top: 2px;
+}
+
+/* ── Parchment scroll ── */
+.scroll-body {
+  width: 88%; max-width: 345px; position: relative;
+  background: radial-gradient(ellipse at 22% 18%, #fef7e2 0%, #f3e7be 38%, #e8d89c 70%, #dbc880 100%);
+  border: 3px solid #c0a048; border-radius: 5px 5px 22px 22px;
+  padding: 20px 22px 26px;
+  box-shadow: 0 24px 58px rgba(0,0,0,0.38),
+              inset 0 2px 10px rgba(255,255,255,0.58),
+              inset 0 -5px 10px rgba(145,105,35,0.18);
+}
+/* top curl */
+.scroll-body::before {
+  content: ''; position: absolute; top: -12px; left: 9%; right: 9%; height: 15px;
+  background: linear-gradient(180deg, transparent 0%, #caa045 52%, #ddb860 100%);
+  border-radius: 50% 50% 0 0;
+  box-shadow: 0 -4px 8px rgba(0,0,0,0.12);
+}
+/* bottom curl */
+.scroll-body::after {
+  content: ''; position: absolute; bottom: -15px; left: 9%; right: 9%; height: 19px;
+  background: linear-gradient(180deg, #c8a040 0%, #b08830 58%, transparent 100%);
+  border-radius: 0 0 50% 50%;
+  box-shadow: 0 7px 14px rgba(0,0,0,0.22);
+}
+
+/* ── "Sign In" heading inside scroll ── */
+.scroll-heading {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(22px,3vw,30px); color: #d03810;
+  text-align: center; margin-bottom: 13px;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+}
+
+/* ── Tabs (Login / Sign Up) ── */
+.auth-tabs {
+  display: flex; gap: 5px; margin-bottom: 13px;
+  background: rgba(155,115,35,0.12); border-radius: 28px; padding: 4px;
+  border: 2px solid rgba(155,115,35,0.2);
+}
+.auth-tab {
+  flex: 1; padding: 8px 8px; border-radius: 22px;
+  font-family: 'Fredoka One', cursive; font-size: 14px;
+  color: #806018; background: none; border: none; cursor: pointer;
+  transition: all 0.22s;
+}
+.auth-tab.active {
+  background: linear-gradient(135deg, #ff9038 0%, #ff5c18 100%);
+  color: #fff; box-shadow: 0 4px 12px rgba(255,100,25,0.38);
+}
+.auth-tab:not(.active):hover { background: rgba(155,115,35,0.14); }
+
+/* ── Auth panels ── */
+.auth-panel { display: none; }
+.auth-panel.active { display: block; animation: fadeUp 0.25s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(7px)} to{opacity:1;transform:none} }
+
+/* ── Input fields  — green pill (exact screenshot style) ── */
+.form-group { margin-bottom: 9px; }
+.input-wrap { position: relative; }
+.input-icon {
+  position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+  font-size: 16px; pointer-events: none; z-index: 2;
+}
+.form-input {
+  width: 100%; padding: 13px 16px 13px 44px;
+  border-radius: 30px;
+  border: 2.5px solid rgba(38,125,38,0.32);
+  background: linear-gradient(135deg, #64c664 0%, #4aac3a 100%);
+  font-family: 'Nunito', sans-serif; font-size: 15px;
+  font-weight: 700; color: #fff; outline: none;
+  box-shadow: 0 5px 0 rgba(22,78,18,0.48), inset 0 1px 0 rgba(255,255,255,0.24);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-input::placeholder { color: rgba(255,255,255,0.68); font-weight: 600; }
+.form-input:focus {
+  border-color: rgba(58,185,58,0.7);
+  box-shadow: 0 5px 0 rgba(22,78,18,0.48), 0 0 0 3px rgba(100,215,100,0.22),
+              inset 0 1px 0 rgba(255,255,255,0.24);
+}
+
+/* ── Enter / Submit button  — orange pill ── */
+.auth-btn {
+  width: 100%; padding: 14px;
+  border-radius: 30px; border: none;
+  background: linear-gradient(135deg, #ffaa40 0%, #ff6418 100%);
+  color: #fff; font-family: 'Fredoka One', cursive;
+  font-size: 20px; letter-spacing: 1px;
+  box-shadow: 0 5px 0 rgba(165,55,5,0.55), 0 10px 22px rgba(255,100,25,0.3);
+  cursor: pointer; transition: transform 0.14s, box-shadow 0.14s;
+  margin-top: 4px; text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.auth-btn:hover  { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(165,55,5,0.55), 0 16px 28px rgba(255,100,25,0.34); }
+.auth-btn:active { transform: translateY(3px);  box-shadow: 0 2px 0 rgba(165,55,5,0.55), 0 4px 8px rgba(255,100,25,0.22); }
+
+/* ── Social ── */
+.social-label {
+  text-align: center; font-size: 11px; font-weight: 800;
+  color: #906820; margin: 11px 0 7px; letter-spacing: 1px; font-family: 'Nunito', sans-serif;
+}
+.social-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+.social-btn {
+  width: 46px; height: 46px; border-radius: 12px;
+  border: 2px solid rgba(155,115,35,0.28);
+  background: rgba(255,255,255,0.62); font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.18s;
+  box-shadow: 0 3px 0 rgba(135,95,25,0.2);
+}
+.social-btn:hover { background: rgba(255,255,255,0.92); transform: translateY(-2px); }
+
+/* ── Register link ── */
+.reg-link {
+  text-align: center; font-size: 13px; font-weight: 700;
+  color: #c03810; font-family: 'Nunito', sans-serif;
+}
+.reg-link span {
+  font-family: 'Fredoka One', cursive; font-size: 15px;
+  cursor: pointer; display: block; margin-top: 2px; transition: color 0.18s;
+}
+.reg-link span:hover { color: #ff2e00; }
+
+/* ── Messages ── */
+.form-msg {
+  border-radius: 20px; padding: 7px 13px;
+  font-size: 12px; font-weight: 800; margin-bottom: 9px;
+  display: none; font-family: 'Nunito', sans-serif;
+  text-align: center; border: 1.5px solid;
+}
+.form-msg.error   { background: rgba(215,40,20,0.11); color: #b82010; border-color: rgba(215,40,20,0.28); display:block; }
+.form-msg.success { background: rgba(35,165,35,0.11); color: #1d7a10; border-color: rgba(35,165,35,0.28); display:block; }
+
+/* ── Avatar grid ── */
+.avatar-label {
+  font-size: 11px; font-weight: 800; color: #806018;
+  letter-spacing: .5px; text-transform: uppercase; margin-bottom: 7px; display: block;
+}
+.avatar-grid {
+  display: grid; grid-template-columns: repeat(6,1fr); gap: 5px; margin-bottom: 9px;
+}
+.av-opt {
+  aspect-ratio: 1; border-radius: 10px; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: 2px solid transparent;
+  background: rgba(155,115,35,0.1); transition: transform 0.16s, border-color 0.16s;
+}
+.av-opt:hover { transform: scale(1.12); background: rgba(155,115,35,0.22); }
+.av-opt.sel {
+  border-color: #ff8c38; background: rgba(255,140,56,0.18);
+  box-shadow: 0 0 10px rgba(255,140,56,0.4); transform: scale(1.1);
+}
+
+/* ── Saved accounts ── */
+.accounts-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 9px; }
+.saved-lbl {
+  font-size: 10px; font-weight: 800; color: #806018;
+  letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px;
+}
+.account-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 11px; border-radius: 20px;
+  background: rgba(255,255,255,0.52); border: 1.5px solid rgba(155,115,35,0.28);
+  cursor: pointer; transition: all 0.18s; font-weight: 700;
+}
+.account-chip:hover { background: rgba(255,255,255,0.82); transform: translateX(4px); }
+.account-chip .ac-av   { font-size: 20px; }
+.account-chip .ac-name { font-family: 'Fredoka One', cursive; font-size: 12px; color: #5a3810; flex:1; }
+.account-chip .ac-time { font-size: 10px; font-weight:600; color: #9a7838; display:block; }
+.account-chip .ac-badge{ font-size:10px; font-weight:800; color: #b07030; }
+.account-chip .ac-arr  { color: #c07828; font-size:15px; font-weight:900; }
+
+/* ── Or divider ── */
+.or-divider {
+  text-align: center; font-size: 10px; font-weight: 800;
+  color: #a08030; margin: 5px 0 3px; position: relative; letter-spacing: 1px;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; position: absolute; top: 50%; height: 1px;
+  width: 36%; background: rgba(155,115,35,0.28);
+}
+.or-divider::before{left:0} .or-divider::after{right:0}
+
+/* ── Last session banner ── */
+.last-session {
+  background: rgba(255,255,255,0.45); border: 1.5px dashed rgba(175,135,45,0.38);
+  border-radius: 14px; padding: 8px 11px; margin-bottom: 9px; display: none;
+}
+.last-session.show { display: flex; align-items: center; gap: 8px; }
+.ls-icon  { font-size: 22px; }
+.ls-text  { flex:1; }
+.ls-title { font-family: 'Fredoka One', cursive; font-size: 12px; color: #c04010; }
+.ls-sub   { font-size: 10px; font-weight:700; color: #907028; margin-top:1px; }
+.ls-resume {
+  padding: 5px 10px; border-radius: 12px; border: none;
+  background: linear-gradient(135deg, #ffaa40, #ff6418);
+  color: #fff; font-family: 'Fredoka One', cursive; font-size: 12px;
+  cursor: pointer; white-space: nowrap; transition: opacity 0.18s;
+}
+.ls-resume:hover { opacity: 0.86; }
+
+/* ═══════════════════════════════════════════
+   BOTTOM STONE TOOLBAR
+═══════════════════════════════════════════ */
+.toolbar {
+  position: absolute; bottom: 14px;
+  left: 50%; transform: translateX(-50%);
+  display: flex; gap: 16px; z-index: 20;
+}
+.tool-btn {
+  width: clamp(48px,7vw,72px); height: clamp(48px,7vw,72px);
+  border-radius: 14px; border: 3px solid #5c4c38;
+  background: radial-gradient(ellipse at 35% 35%, #cab898 0%, #a09068 40%, #706048 100%);
+  font-size: clamp(18px,2.6vw,28px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.16s;
+  box-shadow: 0 5px 0 #382a18, 0 9px 20px rgba(0,0,0,0.32);
+}
+.tool-btn:hover  { transform: translateY(-3px); box-shadow: 0 8px 0 #382a18, 0 14px 24px rgba(0,0,0,0.3); }
+.tool-btn:active { transform: translateY(3px);  box-shadow: 0 2px 0 #382a18, 0 4px 8px rgba(0,0,0,0.2); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 680px) {
+  .scene { overflow-y: auto; overflow-x: hidden; }
+  html, body { overflow: auto; }
+  .panel-wrap { position: relative; width: 100%; max-width: 100%; min-width: unset; padding: 16px 12px 80px; justify-content: flex-start; padding-top: 18px; }
+  .wood-sign, .scroll-body { width: 96%; max-width: 100%; }
+  .characters { width: 100%; height: 36%; opacity: 0.4; }
+  .c-main   { font-size: 65px; left: 45%; }
+  .c-pig    { display: none; }
+  .c-dragon { font-size: 44px; right: 2%; }
+  .c-egg    { display: none; }
+  .foliage  { display: none; }
+  .avatar-grid { grid-template-columns: repeat(4,1fr); }
+}
+@media (max-width: 420px) {
+  .panel-wrap { padding: 16px 8px 70px; }
+  .scroll-body { padding: 16px 16px 22px; }
+  .avatar-grid { grid-template-columns: repeat(3,1fr); }
+  .form-input  { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+
+  <!-- ── Clouds ── -->
+  <div class="cloud" style="width:230px;height:95px;top:5%;right:27%;animation-duration:9s;"></div>
+  <div class="cloud" style="width:150px;height:60px;top:13%;right:16%;animation-duration:12s;animation-delay:3s;"></div>
+  <div class="cloud" style="width:105px;height:44px;top:3%;right:42%;animation-duration:10s;animation-delay:1.5s;"></div>
+  <div class="cloud" style="width:175px;height:72px;top:8%;right:8%;animation-duration:15s;animation-delay:5s;"></div>
+
+  <!-- ── Ground ── -->
+  <div class="ground"></div>
+
+  <!-- ── Characters ── -->
+  <div class="characters">
+    <div class="char c-pig">🐷</div>
+    <div class="char c-main">🧒</div>
+    <div class="char c-dragon">🐉</div>
+    <div class="char c-egg">🥚</div>
+  </div>
+
+  <!-- ── Foliage ── -->
+  <div class="foliage fl">
+    <span class="fl-leaf">🌿</span>
+    <span class="fl-leaf" style="font-size:clamp(26px,4vw,52px);margin-bottom:7px;">🍃</span>
+    <span class="fl-leaf">🌿</span>
+  </div>
+  <div class="foliage fr">
+    <span class="fl-leaf">🌿</span>
+    <span class="fl-leaf" style="font-size:clamp(24px,3.8vw,50px);margin-bottom:5px;">🌱</span>
+  </div>
+
+  <!-- ══════════════════════════════
+       PANEL
+  ══════════════════════════════ -->
+  <div class="panel-wrap">
+
+    <!-- Wooden sign -->
+    <div class="wood-sign">
+      <div class="screw tl"></div><div class="screw tr"></div>
+      <div class="screw bl"></div><div class="screw br"></div>
+      <div class="sign-title-text">📚 KiddoTube</div>
+      <div class="sign-sub-text">Learn · Play · Grow!</div>
+    </div>
+
+    <!-- Parchment scroll -->
+    <div class="scroll-body">
+
+      <!-- Last session banner -->
+      <div class="last-session" id="last-session">
+        <div class="ls-icon" id="ls-icon">🐣</div>
+        <div class="ls-text">
+          <div class="ls-title" id="ls-title">Welcome back!</div>
+          <div class="ls-sub"  id="ls-sub">Continue where you left off</div>
+        </div>
+        <button class="ls-resume" onclick="resumeSession()">Resume →</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login"  onclick="switchTab('login')">🔑 Login</button>
+        <button class="auth-tab"        id="tab-signup" onclick="switchTab('signup')">✨ Sign Up</button>
+      </div>
+
+      <!-- ──────── LOGIN PANEL ──────── -->
+      <div class="auth-panel active" id="panel-login">
+        <div class="scroll-heading">Sign In</div>
+        <div class="form-msg" id="login-msg"></div>
+
+        <!-- Saved accounts -->
+        <div class="accounts-row" id="saved-accounts"></div>
+
+        <div class="form-group">
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input class="form-input" id="l-name" type="text" placeholder="Username" autocomplete="username">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="form-input" id="l-pass" type="password" placeholder="Password" autocomplete="current-password">
+          </div>
+        </div>
+
+        <button class="auth-btn" onclick="doLogin()">Enter</button>
+
+        <div class="social-label">or Sign In with</div>
+        <div class="social-row">
+          <button class="social-btn" title="Email">✉️</button>
+          <button class="social-btn" title="Facebook">🔵</button>
+          <button class="social-btn" title="Google">🔴</button>
+        </div>
+
+        <div class="reg-link">
+          Don't have an account?
+          <span onclick="switchTab('signup')">Register</span>
+        </div>
+      </div>
+
+      <!-- ──────── SIGNUP PANEL ──────── -->
+      <div class="auth-panel" id="panel-signup">
+        <div class="scroll-heading">Create Account</div>
+        <div class="form-msg" id="signup-msg"></div>
+
+        <div class="form-group">
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input class="form-input" id="s-name" type="text" placeholder="Your Name (e.g. Aryan, Priya…)" autocomplete="username">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="form-input" id="s-pass" type="password" placeholder="Choose Password" autocomplete="new-password">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="form-input" id="s-pass2" type="password" placeholder="Confirm Password" autocomplete="new-password">
+          </div>
+        </div>
+
+        <span class="avatar-label">🎭 Pick Your Avatar</span>
+        <div class="avatar-grid" id="avatar-grid"></div>
+
+        <button class="auth-btn" onclick="doSignup()">🌟 Create Account!</button>
+
+        <div class="reg-link" style="margin-top:8px;">
+          Already a member?
+          <span onclick="switchTab('login')">Sign In</span>
+        </div>
+      </div>
+
+    </div><!-- /scroll-body -->
+  </div><!-- /panel-wrap -->
+
+  <!-- Stone toolbar 
+  <div class="toolbar">
+    <button class="tool-btn" title="Home">🏠</button>
+    <button class="tool-btn" title="Sound" id="snd-btn" onclick="toggleSound(this)">🔊</button>
+    <button class="tool-btn" title="Settings">⚙️</button>
+  </div>-->
+
+</div><!-- /scene -->
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT  —  original code functions kept intact
+═══════════════════════════════════════════ -->
+<script>
+/* ── DATA ── */
+const AVATARS = ['🐣','🦁','🐸','🐼','🦊','🐯','🐙','🦄','🐧','🦋','🐬','🦖','🐨','🐻','🐮','🐱','🦅','🐝'];
+let selectedAvatar = AVATARS[0];
+
+/* ── STORAGE HELPERS ── */
+function getAccounts()   { return JSON.parse(localStorage.getItem('kiddotube_accounts') || '{}'); }
+function saveAccounts(a) { localStorage.setItem('kiddotube_accounts', JSON.stringify(a)); }
+function getSession()    { return JSON.parse(localStorage.getItem('kiddotube_session')  || 'null'); }
+function setSession(s)   { localStorage.setItem('kiddotube_session', JSON.stringify(s)); }
+function clearSession()  { localStorage.removeItem('kiddotube_session'); }
+
+const DEFAULT_RETURN_TO = 'index.html';
+
+function getRedirectTarget() {
+  const params    = new URLSearchParams(window.location.search);
+  const requested = (params.get('next') || '').trim();
+  if (!requested) return DEFAULT_RETURN_TO;
+  if (requested.includes('://') || requested.startsWith('//')) return DEFAULT_RETURN_TO;
+  if (!/^[A-Za-z0-9._#?=&/-]+$/.test(requested)) return DEFAULT_RETURN_TO;
+  return requested;
+}
+
+function applyRequestedStartTab() {
+  const params   = new URLSearchParams(window.location.search);
+  const startTab = (params.get('tab') || '').trim();
+  if (startTab) localStorage.setItem('startTab', startTab);
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', () => {
+  applyRequestedStartTab();
+  buildAvatarGrid();
+  buildSavedAccounts();
+  showLastSession();
+
+  ['l-name','l-pass'].forEach(id =>
+    document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); }));
+  ['s-name','s-pass','s-pass2'].forEach(id =>
+    document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); }));
+});
+
+/* ── AVATAR GRID ── */
+function buildAvatarGrid() {
+  const grid = document.getElementById('avatar-grid');
+  grid.innerHTML = AVATARS.map((av, i) =>
+    `<div class="av-opt${i===0?' sel':''}" onclick="selectAvatar(this,'${av}')">${av}</div>`
+  ).join('');
+}
+function selectAvatar(el, av) {
+  document.querySelectorAll('.av-opt').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedAvatar = av;
+}
+
+/* ── SAVED ACCOUNTS ── */
+function buildSavedAccounts() {
+  const accounts = getAccounts();
+  const names    = Object.keys(accounts);
+  const row      = document.getElementById('saved-accounts');
+  if (!names.length) { row.innerHTML = ''; return; }
+
+  row.innerHTML =
+    `<div class="saved-lbl">Quick Login</div>` +
+    names.slice(0, 3).map(name => {
+      const a    = accounts[name];
+      const info = getLastActivityStr(a);
+      return `<div class="account-chip" onclick="quickLogin('${name}')">
+        <span class="ac-av">${a.avatar}</span>
+        <span class="ac-name">${name}<span class="ac-time">${info}</span></span>
+        <span class="ac-badge">⭐ ${a.stars||0}</span>
+        <span class="ac-arr">›</span>
+      </div>`;
+    }).join('') +
+    `<div class="or-divider">or enter details</div>`;
+}
+
+function getLastActivityStr(account) {
+  if (!account.lastLogin) return 'Never logged in';
+  const diffMs  = new Date() - new Date(account.lastLogin);
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffH   = Math.floor(diffMs / 3600000);
+  const diffD   = Math.floor(diffMs / 86400000);
+  if (diffMin < 2)  return 'Just now';
+  if (diffMin < 60) return `${diffMin} min ago`;
+  if (diffH   < 24) return `${diffH}h ago`;
+  if (diffD  === 1) return 'Yesterday';
+  return `${diffD} days ago`;
+}
+
+function quickLogin(name) {
+  document.getElementById('l-name').value = name;
+  document.getElementById('l-pass').focus();
+  showMsg('login', '', '');
+}
+
+/* ── LAST SESSION ── */
+function showLastSession() {
+  const session = getSession();
+  if (!session) return;
+  const accounts = getAccounts();
+  const acc      = accounts[session.name];
+  if (!acc) return;
+
+  const banner = document.getElementById('last-session');
+  banner.classList.add('show');
+  document.getElementById('ls-icon').textContent  = acc.avatar;
+  document.getElementById('ls-title').textContent = `Hey ${session.name}! 👋`;
+
+  const last    = acc.lastActivity;
+  let subText   = 'Continue where you left off';
+  if (last) subText = `Last played: ${last.game || last.activity || 'Learning'} · ${getLastActivityStr(acc)}`;
+  document.getElementById('ls-sub').textContent = subText;
+}
+
+function resumeSession() {
+  const session = getSession();
+  if (!session) return;
+  const target = getRedirectTarget() || session.returnTo || DEFAULT_RETURN_TO;
+  session.returnTo = target;
+  setSession(session);
+  updateLastLogin(session.name);
+  window.location.href = target;
+}
+
+/* ── TAB SWITCH ── */
+function switchTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active',  tab === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('panel-login').classList.toggle('active',  tab === 'login');
+  document.getElementById('panel-signup').classList.toggle('active', tab === 'signup');
+}
+
+/* ── MESSAGES ── */
+function showMsg(panel, type, text) {
+  const el    = document.getElementById(`${panel}-msg`);
+  el.className = `form-msg ${type}`;
+  el.textContent = text;
+  el.style.display = !type ? 'none' : 'block';
+}
+
+/* ── LOGIN ── */
+function doLogin() {
+  const name   = document.getElementById('l-name').value.trim();
+  const pass   = document.getElementById('l-pass').value;
+  const target = getRedirectTarget();
+  if (!name) { showMsg('login','error','Please enter your name!'); return; }
+  if (!pass) { showMsg('login','error','Please enter your password!'); return; }
+
+  const accounts = getAccounts();
+  if (!accounts[name])                          { showMsg('login','error','Account not found. Please sign up first!'); return; }
+  if (accounts[name].password !== btoa(pass))   { showMsg('login','error','Wrong password! Try again 🔒'); return; }
+
+  showMsg('login','success','Welcome back! Launching… 🚀');
+  updateLastLogin(name);
+  setSession({ name, returnTo: target, loginTime: Date.now() });
+  setTimeout(() => window.location.href = target, 800);
+}
+
+/* ── SIGNUP ── */
+function doSignup() {
+  const name   = document.getElementById('s-name').value.trim();
+  const pass   = document.getElementById('s-pass').value;
+  const pass2  = document.getElementById('s-pass2').value;
+  const target = getRedirectTarget();
+
+  if (!name)           { showMsg('signup','error','Please enter your name!'); return; }
+  if (name.length < 2) { showMsg('signup','error','Name must be at least 2 characters!'); return; }
+  if (!pass)           { showMsg('signup','error','Please choose a password!'); return; }
+  if (pass.length < 4) { showMsg('signup','error','Password must be at least 4 characters!'); return; }
+  if (pass !== pass2)  { showMsg('signup','error','Passwords don\'t match! 🙈'); return; }
+
+  const accounts = getAccounts();
+  if (accounts[name]) { showMsg('signup','error','Name already taken! Try a different one.'); return; }
+
+  accounts[name] = {
+    avatar: selectedAvatar,
+    password: btoa(pass),
+    createdAt: Date.now(),
+    lastLogin: Date.now(),
+    stars: 0,
+    gamesPlayed: 0,
+    lastActivity: null,
+    gameProgress: {}
+  };
+  saveAccounts(accounts);
+  setSession({ name, returnTo: target, loginTime: Date.now() });
+  showMsg('signup','success','Account created! Welcome to KiddoTube! 🎉');
+  setTimeout(() => window.location.href = target, 900);
+}
+
+function updateLastLogin(name) {
+  const accounts = getAccounts();
+  if (accounts[name]) { accounts[name].lastLogin = Date.now(); saveAccounts(accounts); }
+}
+
+/* ── SOUND TOGGLE ── */
+function toggleSound(btn) {
+  btn._on = !btn._on;
+  btn.textContent = btn._on ? '🔇' : '🔊';
+}
+</script>
+</body>
+</html>

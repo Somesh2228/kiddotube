@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Shape Match Fun! - Fun learning for kids">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shape Match Fun!</title>
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/shape-match.css" />
+</head>
+<body class="shape-match-page" data-nav-page="shape-match" data-nav-home-href="games.html" data-nav-brand-href="games.html" data-nav-search-href="app.html" data-nav-profile-href="profile.html">
+
+  <div class="game-page-topbar">
+    <button class="game-page-topbar-back" type="button" onclick="goBackToGames()">← Back</button>
+    <div class="game-page-topbar-title">Shape Match</div>
+    <div class="game-page-topbar-score" id="shape-topbar-score">⭐ 0</div>
+  </div>
+
+  <!-- Floating background bubbles -->
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="page-top-strip">
+    <div class="save-note" id="save-note">Play now and save your best levels.</div>
+  </div>
+
+  <!-- Header -->
+  <header class="game-header">
+    <div class="logo">🎨 ShapeMatch!</div>
+    <div class="hud">
+      <div class="hud-item">
+        <span class="hud-icon">⭐</span>
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="score">0</span>
+      </div>
+      <div class="hud-item level-badge">
+        <span class="hud-icon">🏆</span>
+        <span class="hud-label">Level</span>
+        <span class="hud-value" id="level-display">1</span>
+      </div>
+      <div class="hud-item timer-hud">
+        <span class="hud-icon">⏱️</span>
+        <span class="hud-label">Time</span>
+        <span class="hud-value" id="timer">30</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main game area -->
+  <main class="game-main">
+
+    <!-- Instruction banner -->
+    <div class="instruction-bar" id="instruction-bar">
+      Drag each shape into its matching box! 🚀
+    </div>
+
+    <!-- Level progress bar -->
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+      <span class="progress-label" id="progress-label">1 / 15</span>
+    </div>
+
+    <!-- Shapes to drag -->
+    <section class="shapes-panel" id="shapes-panel" aria-label="Shapes to drag"></section>
+
+    <!-- Animated arrow hint -->
+    <div class="arrow-hint" aria-hidden="true">⬇️ Drop here!</div>
+
+    <!-- Drop zones -->
+    <section class="dropzones-panel" id="dropzones-panel" aria-label="Drop zones"></section>
+
+    <!-- Feedback message -->
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button class="btn btn-reset" id="reset-btn" onclick="resetLevel()">🔄 Restart</button>
+      <button class="btn btn-next" id="next-btn" onclick="nextLevel()" style="display:none">Next Level ➡️</button>
+    </div>
+
+  </main>
+
+  <!-- Level Complete Overlay -->
+  <div class="overlay" id="level-overlay" aria-modal="true" role="dialog" style="display:none">
+    <div class="overlay-card">
+      <div class="overlay-emoji" id="overlay-emoji">🎉</div>
+      <h2 class="overlay-title" id="overlay-title">Level Complete!</h2>
+      <p class="overlay-msg" id="overlay-msg">Amazing job! You matched all shapes!</p>
+      <div class="overlay-score">Score: <span id="overlay-score">0</span></div>
+      <button class="btn btn-next big-btn" id="overlay-next-btn">Next Level ➡️</button>
+      <button class="btn btn-reset big-btn" onclick="resetGame()">🏠 Play Again</button>
+    </div>
+  </div>
+
+  <!-- Game Over Overlay -->
+  <div class="overlay" id="gameover-overlay" aria-modal="true" role="dialog" style="display:none">
+    <div class="overlay-card gameover-card">
+      <div class="overlay-emoji">⏰</div>
+      <h2 class="overlay-title">Time's Up!</h2>
+      <p class="overlay-msg">Better luck next time!</p>
+      <div class="overlay-score">Score: <span id="gameover-score">0</span></div>
+      <button class="btn btn-next big-btn" onclick="resetGame()">🔄 Try Again</button>
+    </div>
+  </div>
+
+  <script src="js/navbar.js"></script>
+  <script src="js/shape-match.js"></script>
+<script>
+function goBackToGames() {
+  localStorage.setItem('startTab', 'games');
+  window.location.href = "app.html";
+}
+
+function mirrorGameHeaderScore(sourceId, targetId, prefix) {
+  const source = document.getElementById(sourceId);
+  const target = document.getElementById(targetId);
+  if (!source || !target) return;
+  const sync = () => {
+    target.textContent = `${prefix}${String(source.textContent || '0').trim()}`;
+  };
+  sync();
+  new MutationObserver(sync).observe(source, { childList: true, subtree: true, characterData: true });
+}
+
+window.addEventListener('load', () => {
+  mirrorGameHeaderScore('score', 'shape-topbar-score', '⭐ ');
+});
+</script>
+</body>
+</html>

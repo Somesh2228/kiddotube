@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Jungle Animal Learning - Fun learning for kids">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jungle Animal Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --shared-navbar-h: 0px;
+      --jungle-dark: #0d2b0f;
+      --jungle-mid:  #1a4a1c;
+      --jungle-leaf: #2d7a30;
+      --jungle-lime: #6abf3a;
+      --jungle-gold: #f5c842;
+      --jungle-soil: #7a4a1e;
+      --jungle-path: #c8a45a;
+      --jungle-path2:#e8c87a;
+      --node-size: clamp(64px, 9vw, 110px);
+    }
+
+    html, body {
+      width:100%; height:100%;
+      overflow:hidden;
+      font-family:'Fredoka One', cursive;
+      background: var(--jungle-dark);
+    }
+
+    /* ══ BG ══ */
+    #jungleBg {
+      position:fixed; inset:0; z-index:0;
+      background: linear-gradient(180deg,
+        #071407 0%, #0b1f0b 12%, #0f2e10 28%,
+        #183d18 45%, #1e5020 62%, #2d7a30 78%,
+        #3d9235 90%, #4aaa3a 100%);
+    }
+
+    /* fog */
+    .fog {
+      position:fixed; left:-10%; width:120%; height:90px;
+      border-radius:50%;
+      background:rgba(160,210,130,0.06);
+      filter:blur(22px);
+      z-index:1; pointer-events:none;
+      animation:fogDrift ease-in-out infinite;
+    }
+    .fog1{top:6%;  animation-duration:24s; animation-delay:0s;   opacity:.7;}
+    .fog2{top:30%; animation-duration:34s; animation-delay:-14s; opacity:.4; height:60px;}
+    .fog3{top:55%; animation-duration:28s; animation-delay:-8s;  opacity:.3;}
+    @keyframes fogDrift{0%{transform:translateX(-9%)}50%{transform:translateX(9%)}100%{transform:translateX(-9%)}}
+
+    /* fireflies */
+    .firefly {
+      position:fixed; border-radius:50%; width:4px; height:4px;
+      background:#cfff70; box-shadow:0 0 8px 3px #9eff00;
+      z-index:2; pointer-events:none;
+      animation:ffFloat ease-in-out infinite, ffBlink ease-in-out infinite;
+    }
+    @keyframes ffFloat{0%{transform:translate(0,0)}25%{transform:translate(14px,-20px)}50%{transform:translate(-10px,-34px)}75%{transform:translate(18px,-16px)}100%{transform:translate(0,0)}}
+    @keyframes ffBlink{0%,100%{opacity:1}45%,55%{opacity:0.08}}
+
+    /* falling leaves */
+    .falling-leaf {
+      position:fixed; top:-40px; z-index:6; pointer-events:none;
+      font-size:clamp(14px,2.5vw,22px);
+      animation:leafFall linear infinite, leafSway ease-in-out infinite alternate;
+      opacity:.75;
+    }
+    @keyframes leafFall{0%{top:-40px;opacity:.8}100%{top:110vh;opacity:0}}
+    @keyframes leafSway{from{margin-left:-16px}to{margin-left:16px}}
+
+    /* ══ CANOPY ══ */
+    #canopy {
+      position:fixed; top:0; left:0; width:100%; height:20vh;
+      z-index:8; pointer-events:none;
+    }
+
+    /* ══ FLOOR ══ */
+    #floor {
+      position:fixed; bottom:0; left:0; width:100%; height:13vh;
+      z-index:8; pointer-events:none;
+      background:linear-gradient(180deg,#3d2008,#1a0e04);
+    }
+    #floor::before{
+      content:''; position:absolute; top:0; left:0; width:100%; height:9px;
+      background:linear-gradient(90deg,#6abf3a,#4aaa3a,#6abf3a,#3d9235);
+    }
+
+    /* ground plants */
+    .gplant{position:fixed; bottom:7vh; z-index:9; pointer-events:none;}
+
+    /* ══ BACK BTN ══ */
+    .back-btn {
+      position:fixed; top:14px; left:12px; z-index:300;
+      display:flex; align-items:center; gap:6px;
+      background:#a5430a; color:#fff;
+      border:none; border-radius:50px; padding:8px 16px;
+      font-family:'Fredoka One',cursive; font-size:14px;
+      cursor:pointer; text-decoration:none;
+      box-shadow:0 4px #5a2004, 0 0 14px rgba(255,100,0,.2);
+      transition:all .15s;
+    }
+    .back-btn:hover{background:#c4530d;}
+    .back-btn:active{transform:translateY(3px); box-shadow:0 1px #5a2004;}
+
+    /* ══ TITLE ══ */
+    #titleArea {
+      position:fixed; top:12px; left:50%; transform:translateX(-50%);
+      z-index:40; text-align:center; white-space:nowrap;
+      pointer-events:none;
+    }
+    #titleArea h1 {
+      font-size:clamp(18px,4vw,48px);
+      color:var(--jungle-gold);
+      text-shadow:2px 3px 0 #5a2e00, 0 0 22px rgba(200,160,0,.5);
+      animation:titleWobble 2.2s ease-in-out infinite alternate;
+    }
+    @keyframes titleWobble{from{transform:rotate(-1.5deg)}to{transform:rotate(1.5deg) scale(1.03)}}
+
+    /* ══ CURRENT ANIMAL SPOTLIGHT ══ */
+    #spotlight {
+      position:fixed; top:clamp(60px,9vh,90px); left:50%;
+      transform:translateX(-50%);
+      z-index:50;
+      background:linear-gradient(135deg,rgba(8,32,8,.92),rgba(16,58,18,.92));
+      border:2.5px solid rgba(100,200,80,.35);
+      border-radius:22px; backdrop-filter:blur(5px);
+      box-shadow:0 8px 32px rgba(0,0,0,.55), 0 0 40px rgba(100,200,60,.08);
+      padding:clamp(8px,1.5vh,14px) clamp(14px,3vw,26px);
+      display:flex; align-items:center; gap:14px;
+      min-width:220px;
+    }
+    #spotImg {
+      width:clamp(52px,8vw,88px); height:clamp(52px,8vw,88px);
+      object-fit:contain;
+      filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));
+      transition: transform 0.3s;
+    }
+    #spotImg.pop { animation: spotPop .42s cubic-bezier(.175,.885,.32,1.275) both; }
+    @keyframes spotPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+    .spot-text{ display:flex; flex-direction:column; gap:2px; }
+    #spotName {
+      font-size:clamp(20px,4.2vw,42px);
+      color:var(--jungle-gold);
+      text-shadow:0 2px 8px rgba(0,0,0,.6);
+      line-height:1;
+    }
+    #spotHint {
+      font-family:'Nunito',sans-serif; font-weight:700;
+      font-size:clamp(9px,1.5vw,13px);
+      color:rgba(150,220,120,.65);
+    }
+    #spotWave {
+      display:flex; gap:3px; align-items:center;
+      opacity:0; transition:opacity .3s;
+      margin-left:4px;
+    }
+    #spotWave.on{opacity:1;}
+    #spotWave span {
+      width:3px; border-radius:2px;
+      background:var(--jungle-lime);
+      animation:wvBar .55s ease-in-out infinite alternate;
+    }
+    #spotWave span:nth-child(1){height:5px;  animation-delay:0s;}
+    #spotWave span:nth-child(2){height:12px; animation-delay:.1s;}
+    #spotWave span:nth-child(3){height:18px; animation-delay:.2s;}
+    #spotWave span:nth-child(4){height:12px; animation-delay:.3s;}
+    #spotWave span:nth-child(5){height:5px;  animation-delay:.4s;}
+    @keyframes wvBar{from{transform:scaleY(.4);opacity:.5}to{transform:scaleY(1.2);opacity:1}}
+
+    /* ══ PATH VIEWPORT ══ */
+    #pathViewport {
+      position:fixed; left:0; top:0; width:100%; height:100%;
+      z-index:10;
+      overflow:hidden;
+      pointer-events:none;
+    }
+
+    /* This entire div slides up/down via translateY */
+    #pathTrack {
+      position:absolute; left:0; width:100%;
+      will-change:transform;
+      /* Smooth springy slide — the main feature */
+      transition: transform 0.75s cubic-bezier(0.34, 1.30, 0.64, 1);
+      pointer-events:none;
+    }
+
+    #pathSvg {
+      position:absolute; left:0; top:0; width:100%;
+      pointer-events:none;
+    }
+
+    /* ══ ANIMAL NODES ══ */
+    .animal-node {
+      position:absolute;
+      transform:translate(-50%,-50%);
+      z-index:20;
+      cursor:pointer;
+      pointer-events:all;
+    }
+
+    .node-bubble {
+      width:var(--node-size); height:var(--node-size);
+      border-radius:50%;
+      background:radial-gradient(circle at 35% 30%, #fff9e0, var(--jungle-gold) 58%, #a06b00);
+      border:3px solid #f5e060;
+      box-shadow:0 4px 16px rgba(0,0,0,.6), 0 0 20px rgba(240,200,0,.3);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+      transition:box-shadow .2s, transform .2s;
+      animation:nodeBob 2.2s ease-in-out infinite alternate;
+    }
+    @keyframes nodeBob{from{transform:translateY(0)}to{transform:translateY(-7px)}}
+
+    .node-bubble img {
+      width:70%; height:70%; object-fit:contain;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
+      pointer-events:none;
+    }
+    .node-emoji{ font-size:clamp(24px,5vw,52px); line-height:1; }
+
+    .node-label { display:none; }
+
+    /* Active ring + glow */
+    .animal-node.active .node-bubble {
+      box-shadow:
+        0 0 0 4px #fff,
+        0 0 0 9px var(--jungle-gold),
+        0 8px 28px rgba(0,0,0,.7),
+        0 0 44px rgba(240,200,0,.55);
+      animation:nodeBob 2.2s ease-in-out infinite alternate,
+                activeGlow 1.4s ease-in-out infinite alternate;
+    }
+    @keyframes activeGlow{
+      from{filter:brightness(1)}
+      to  {filter:brightness(1.3) drop-shadow(0 0 14px #ffe066)}
+    }
+
+    /* Jump-up animation when a node becomes active */
+    .animal-node.jump .node-bubble {
+      animation:nodeJump .55s cubic-bezier(.175,.885,.32,1.4) both,
+                activeGlow 1.4s ease-in-out infinite alternate;
+    }
+    @keyframes nodeJump{
+      0%  {transform:translateY(0) scale(1)}
+      35% {transform:translateY(-28px) scale(1.18)}
+      60% {transform:translateY(-14px) scale(1.1)}
+      80% {transform:translateY(-20px) scale(1.15)}
+      100%{transform:translateY(-7px)  scale(1)}
+    }
+
+    @media(hover:hover){
+      .animal-node:hover .node-bubble { transform:scale(1.13) translateY(-7px); }
+    }
+
+    /* ══ CONTROLS ══ */
+    #controls {
+      position:fixed; bottom:clamp(14px,3vh,30px); left:50%;
+      transform:translateX(-50%);
+      display:flex; gap: 8px; z-index:100;
+      flex-wrap:nowrap; align-items:center;
+    }
+    #controls button {
+      font-family:'Fredoka One',cursive;
+      font-size:clamp(12px,2vw,16px);
+      padding:9px 18px; border:none; border-radius:16px;
+      cursor:pointer; color:#fff;
+      background:#1e6e1e; box-shadow:0 4px #0a3a0a;
+      transition:all .15s; white-space:nowrap;
+    }
+    #controls button:hover{background:#2d9e2d;}
+    #controls button:active{transform:translateY(3px);box-shadow:0 1px #0a3a0a;}
+    #autoBtn    {background:#9c6d00; box-shadow:0 4px #5a3a00;}
+    #autoBtn:hover{background:#c48a00;}
+    #autoBtn.on {background:#b71c1c; box-shadow:0 4px #7f0000;}
+    #soundBtn   {background:#4a1d96; box-shadow:0 4px #2d0f5e;}
+    #soundBtn:hover{background:#6a2fb8;}
+
+    /* scroll hint arrows */
+    .scroll-arrow {
+      position:fixed; left:50%; z-index:60; pointer-events:none;
+      transform:translateX(-50%);
+      font-size:clamp(18px,3vw,26px);
+      color:rgba(245,200,66,.55);
+      transition:color .2s ease, text-shadow .2s ease, opacity .2s ease;
+      animation:arrowPulse 1.5s ease-in-out infinite alternate;
+    }
+    #arrowUp  {top:clamp(170px,24vh,210px);}
+    #arrowDown{bottom:clamp(118px,20vh,155px);}
+    .scroll-arrow.is-active{
+      color:rgba(255,234,151,.98);
+      text-shadow:0 0 20px rgba(245,200,66,.7);
+    }
+    @keyframes arrowPulse{from{opacity:.25;transform:translateX(-50%) scale(1)}to{opacity:.85;transform:translateX(-50%) scale(1.2)}}
+  </style>
+</head>
+<body>
+
+<div id="jungleBg"></div>
+<div class="fog fog1"></div>
+<div class="fog fog2"></div>
+<div class="fog fog3"></div>
+
+<a class="back-btn" href="Learn.html">🌿 Back</a>
+
+<div id="titleArea"><h1>🦁 Jungle Animals 🌴</h1></div>
+
+<!-- SPOTLIGHT -->
+<div id="spotlight">
+  <img id="spotImg" src="" alt="">
+  <div class="spot-text">
+    <div id="spotName">Lion</div>
+    <div id="spotHint">Tap • Scroll • Swipe</div>
+  </div>
+  <div id="spotWave">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- SCROLL HINTS -->
+<div class="scroll-arrow" id="arrowUp">▲</div>
+<div class="scroll-arrow" id="arrowDown">▼</div>
+
+<!-- CANOPY -->
+<svg id="canopy" viewBox="0 0 1440 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="80"  cy="0" rx="140" ry="110" fill="#0f2a0f" opacity=".95"/>
+  <ellipse cx="280" cy="0" rx="180" ry="90"  fill="#122e12" opacity=".9"/>
+  <ellipse cx="480" cy="0" rx="160" ry="120" fill="#0d280d" opacity=".95"/>
+  <ellipse cx="680" cy="0" rx="200" ry="100" fill="#112a11" opacity=".9"/>
+  <ellipse cx="880" cy="0" rx="160" ry="110" fill="#0f2a0f" opacity=".95"/>
+  <ellipse cx="1100"cy="0" rx="190" ry="95"  fill="#122e12" opacity=".9"/>
+  <ellipse cx="1350"cy="0" rx="170" ry="120" fill="#0d280d" opacity=".95"/>
+  <ellipse cx="0"   cy="0" rx="120" ry="85"  fill="#1a4a1c"/>
+  <ellipse cx="180" cy="0" rx="160" ry="100" fill="#1e5020"/>
+  <ellipse cx="400" cy="0" rx="140" ry="80"  fill="#1a4a1c"/>
+  <ellipse cx="600" cy="0" rx="170" ry="105" fill="#225522"/>
+  <ellipse cx="820" cy="0" rx="150" ry="88"  fill="#1e5020"/>
+  <ellipse cx="1020"cy="0" rx="160" ry="100" fill="#1a4a1c"/>
+  <ellipse cx="1260"cy="0" rx="145" ry="85"  fill="#225522"/>
+  <ellipse cx="1440"cy="0" rx="130" ry="95"  fill="#1a4a1c"/>
+  <line x1="150" y1="0" x2="145" y2="160" stroke="#2d6e1e" stroke-width="3" opacity=".65"/>
+  <line x1="350" y1="0" x2="360" y2="130" stroke="#256018" stroke-width="2.5" opacity=".55"/>
+  <line x1="560" y1="0" x2="550" y2="170" stroke="#2d6e1e" stroke-width="3" opacity=".65"/>
+  <line x1="760" y1="0" x2="770" y2="140" stroke="#256018" stroke-width="2" opacity=".55"/>
+  <line x1="950" y1="0" x2="940" y2="155" stroke="#2d6e1e" stroke-width="2.5" opacity=".6"/>
+  <line x1="1150"y1="0" x2="1160"y2="120" stroke="#256018" stroke-width="3" opacity=".55"/>
+  <line x1="1380"y1="0" x2="1370"y2="150" stroke="#2d6e1e" stroke-width="2" opacity=".6"/>
+</svg>
+
+<div id="floor"></div>
+
+<!-- SLIDING PATH VIEWPORT -->
+<div id="pathViewport">
+  <div id="pathTrack">
+    <svg id="pathSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+    <!-- animal nodes injected here -->
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div id="controls">
+  <button id="soundBtn" onclick="playCurrentSound()">🎵 Sound</button>
+  <button onclick="speakName()">🔊 Speak</button>
+  <button id="autoBtn" onclick="toggleAuto()">▶ Auto</button>
+</div>
+
+<script>
+/* ═══ DATA ═══ */
+const data = [
+  {word:"Lion",    img:"",     sound:"/sounds/lion.mp3",     emoji:"🦁"},
+  {word:"Tiger",   img:"",    sound:"/sounds/tiger.mp3",    emoji:"🐯"},
+  {word:"Dog",     img:"",      sound:"/sounds/dog.mp3",      emoji:"🐶"},
+  {word:"Cat",     img:"",      sound:"/sounds/cat.mp3",      emoji:"🐱"},
+  {word:"Elephant",img:"", sound:"/sounds/elephant.mp3", emoji:"🐘"},
+  {word:"Horse",   img:"",    sound:"/sounds/horse.mp3",    emoji:"🐴"},
+  {word:"Monkey",  img:"",   sound:"/sounds/monkey.mp3",   emoji:"🐒"},
+  {word:"Bear",    img:"",     sound:"/sounds/bear.mp3",     emoji:"🐻"},
+  {word:"Sheep",   img:"",    sound:"/sounds/sheep.mp3",    emoji:"🐑"},
+  {word:"Goat",    img:"",     sound:"/sounds/goat.mp3",     emoji:"🐐"},
+  {word:"Pig",     img:"",      sound:"/sounds/pig.mp3",      emoji:"🐷"},
+  {word:"Cow",     img:"",      sound:"/sounds/cow.mp3",      emoji:"🐄"},
+  {word:"Frog",    img:"",     sound:"/sounds/frog.mp3",     emoji:"🐸"},
+  {word:"Duck",    img:"",     sound:"/sounds/duck.mp3",     emoji:"🦆"},
+  {word:"Owl",     img:"",      sound:"/sounds/owl.mp3",      emoji:"🦉"},
+  {word:"Wolf",    img:"",     sound:"/sounds/wolf.mp3",     emoji:"🐺"},
+  {word:"Rabbit",  img:"",   sound:"/sounds/rabbit.mp3",   emoji:"🐰"},
+  {word:"Deer",    img:"",     sound:"/sounds/deer.mp3",     emoji:"🦌"},
+  {word:"Parrot",  img:"",   sound:"/sounds/parrot.mp3",   emoji:"🦜"},
+  {word:"Hen",     img:"",      sound:"/sounds/hen.mp3",      emoji:"🐔"},
+];
+
+/* ═══ STATE ═══ */
+let currentIndex = 0;
+const currentAudio = new Audio();
+currentAudio.preload = "auto";
+currentAudio.playsInline = true;
+currentAudio.setAttribute("playsinline", "");
+currentAudio.setAttribute("webkit-playsinline", "");
+let autoTimer     = null;
+let pathPoints    = [];
+let nodes         = [];
+let wheelAccum    = 0;
+let wheelLock     = false;
+let wheelIdleT    = null;
+let wheelUnlockT  = null;
+let audioPrimed   = false;
+let audioPriming  = false;
+let fallbackCtx   = null;
+
+/* ════════════════════════════════════════
+   GEOMETRY — vertical sinusoidal path
+   ════════════════════════════════════════ */
+const STEP = 165;   // px between animals (vertical)
+const PAD  = 130;   // padding top & bottom of track
+
+function computePoints(count) {
+  const vw  = window.innerWidth;
+  const pts = [];
+  for (let i = 0; i < count; i++) {
+    const amp = vw * 0.27;
+    const cx  = vw * 0.5;
+    // Alternating sinusoidal swing
+    const x = cx
+      + Math.sin(i * 0.9)  * amp * (i % 2 === 0 ? 0.7 : -0.7)
+      + Math.sin(i * 2.3)  * amp * 0.22;
+    const y = PAD + i * STEP;
+    pts.push({ x: Math.max(75, Math.min(vw - 75, x)), y });
+  }
+  return pts;
+}
+
+/* ════════════════════════════════════════
+   DRAW SVG PATH
+   ════════════════════════════════════════ */
+function drawPath(pts) {
+  const vw     = window.innerWidth;
+  const svg    = document.getElementById("pathSvg");
+  const totalH = PAD * 2 + (pts.length - 1) * STEP;
+  svg.innerHTML = "";
+  svg.setAttribute("viewBox", `0 0 ${vw} ${totalH}`);
+  svg.style.width  = vw + "px";
+  svg.style.height = totalH + "px";
+  if (pts.length < 2) return;
+
+  // Smooth cubic bezier through all points
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i-1], c = pts[i];
+    const my = (p.y + c.y) / 2;
+    d += ` C ${p.x},${my} ${c.x},${my} ${c.x},${c.y}`;
+  }
+
+  const mk = (stroke, w, extra={}) => {
+    const el = document.createElementNS("http://www.w3.org/2000/svg","path");
+    el.setAttribute("d", d);
+    el.setAttribute("fill","none");
+    el.setAttribute("stroke", stroke);
+    el.setAttribute("stroke-width", w);
+    el.setAttribute("stroke-linecap","round");
+    el.setAttribute("stroke-linejoin","round");
+    Object.entries(extra).forEach(([k,v])=>el.setAttribute(k,v));
+    return el;
+  };
+
+  svg.appendChild(mk("#3a1e04", 36, {opacity:"0.6"}));      // deep shadow
+  svg.appendChild(mk("#c8a45a", 28));                         // soil
+  svg.appendChild(mk("#e8c87a", 12, {opacity:"0.5"}));       // light stripe
+  svg.appendChild(mk("#a07838",  3, {opacity:"0.45","stroke-dasharray":"14 22"})); // footprints
+
+  // Pebbles
+  pts.forEach(pt => {
+    for (let j = 0; j < 4; j++) {
+      const cx = pt.x + (Math.random()-.5)*34;
+      const cy = pt.y + (Math.random()-.5)*26;
+      const r  = 1.5 + Math.random()*3;
+      const c  = document.createElementNS("http://www.w3.org/2000/svg","circle");
+      c.setAttribute("cx",cx); c.setAttribute("cy",cy);
+      c.setAttribute("r", r);  c.setAttribute("fill","#b89040");
+      c.setAttribute("opacity","0.4");
+      svg.appendChild(c);
+    }
+  });
+}
+
+/* ════════════════════════════════════════
+   CREATE NODES
+   ════════════════════════════════════════ */
+function createNodes(pts) {
+  document.querySelectorAll(".animal-node").forEach(n=>n.remove());
+  nodes = [];
+  const track = document.getElementById("pathTrack");
+
+  pts.forEach((pt, i) => {
+    const animal = data[i];
+    const node   = document.createElement("div");
+    node.className = "animal-node" + (i === currentIndex ? " active" : "");
+    node.style.left = pt.x + "px";
+    node.style.top  = pt.y + "px";
+    node.dataset.index = i;
+
+    const bubble = document.createElement("div");
+    bubble.className = "node-bubble";
+    bubble.style.animationDelay = (i * 0.14) + "s";
+
+    // Image (with emoji fallback)
+    const img = document.createElement("img");
+    img.src = animal.img; img.alt = animal.word;
+    img.onerror = () => {
+      img.style.display = "none";
+      const em = document.createElement("div");
+      em.className = "node-emoji";
+      em.textContent = animal.emoji;
+      bubble.appendChild(em);
+    };
+    bubble.appendChild(img);
+    node.appendChild(bubble);
+
+    // Events
+    node.addEventListener("click", () => selectAnimal(i));
+    track.appendChild(node);
+    nodes.push(node);
+  });
+}
+
+/* ════════════════════════════════════════
+   SLIDE PATH — the key feature.
+   Translates the track so the active node's
+   Y coordinate lands at the viewport center.
+   ════════════════════════════════════════ */
+function slideToActive(animate = true) {
+  const track = document.getElementById("pathTrack");
+  const pt    = pathPoints[currentIndex];
+  if (!pt) return;
+
+  // Where we want pt.y to appear on screen
+  const targetScreenY = window.innerHeight * 0.50;
+  const translateY    = targetScreenY - pt.y;
+
+  if (!animate) {
+    // Instant — disable transition temporarily
+    track.style.transition = "none";
+    track.style.transform  = `translateY(${translateY}px)`;
+    void track.offsetHeight;           // flush
+    track.style.transition = "";       // restore
+  } else {
+    track.style.transform = `translateY(${translateY}px)`;
+  }
+}
+
+const arrowUpEl = document.getElementById("arrowUp");
+const arrowDownEl = document.getElementById("arrowDown");
+
+/* ════════════════════════════════════════
+   SOUND
+   ════════════════════════════════════════ */
+function ensureFallbackContext() {
+  if (!fallbackCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    fallbackCtx = new AC();
+  }
+  if (fallbackCtx.state === "suspended") {
+    fallbackCtx.resume().catch(() => {});
+  }
+  return fallbackCtx;
+}
+
+function primeAudioPlayback() {
+  ensureFallbackContext();
+  if (audioPrimed || audioPriming) return;
+  audioPriming = true;
+
+  try {
+    currentAudio.pause();
+    currentAudio.muted = true;
+    currentAudio.src = data[currentIndex].sound;
+    currentAudio.load();
+
+    const unlockPlay = currentAudio.play();
+    if (unlockPlay && typeof unlockPlay.then === "function") {
+      unlockPlay.then(() => {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio.muted = false;
+        audioPrimed = true;
+        audioPriming = false;
+      }).catch(() => {
+        currentAudio.muted = false;
+        audioPriming = false;
+      });
+      return;
+    }
+
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio.muted = false;
+    audioPrimed = true;
+  } catch (e) {
+    currentAudio.muted = false;
+  }
+
+  audioPriming = false;
+}
+
+function playSound(idx, updateBtn = true) {
+  ensureFallbackContext();
+  audioPriming = false;
+  currentAudio.pause();
+  currentAudio.muted = false;
+  currentAudio.currentTime = 0;
+  currentAudio.src = data[idx].sound;
+  currentAudio.load();
+
+  currentAudio.play().then(() => {
+    audioPrimed = true;
+    document.getElementById("spotWave").classList.add("on");
+    if (updateBtn) document.getElementById("soundBtn").textContent = "🔊 Playing…";
+  }).catch(() => {
+    playFallback();
+  });
+
+  currentAudio.onended = () => {
+    document.getElementById("spotWave").classList.remove("on");
+    if (updateBtn) document.getElementById("soundBtn").textContent = "🎵 Sound";
+  };
+  currentAudio.onerror = () => {
+    document.getElementById("spotWave").classList.remove("on");
+    if (updateBtn) document.getElementById("soundBtn").textContent = "🎵 Sound";
+    playFallback();
+  };
+}
+
+function playFallback() {
+  try {
+    const ac = ensureFallbackContext();
+    if (!ac) return;
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.connect(g); g.connect(ac.destination);
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(310, ac.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, ac.currentTime+.45);
+    g.gain.setValueAtTime(.13, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime+.65);
+    osc.start(); osc.stop(ac.currentTime+.65);
+  }catch(e){}
+}
+
+function playCurrentSound() { playSound(currentIndex, true); }
+
+function speakName() {
+  const u = new SpeechSynthesisUtterance(data[currentIndex].word);
+  const v = speechSynthesis.getVoices();
+  u.voice = v.find(x=>x.lang==="en-US")||v[0];
+  u.rate=.78; u.pitch=1.3; u.volume=1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+/* ════════════════════════════════════════
+   SELECT ANIMAL — plays + slides path
+   ════════════════════════════════════════ */
+function selectAnimal(idx, autoPlay = true) {
+  const prevIdx = currentIndex;
+  currentIndex  = idx;
+
+  // Remove old active / jump
+  nodes.forEach((n, i) => {
+    n.classList.remove("active","jump");
+  });
+
+  // Mark new active + trigger jump animation
+  const newNode = nodes[idx];
+  if (newNode) {
+    newNode.classList.add("active");
+    // Re-trigger jump by removing then adding class
+    void newNode.offsetWidth;
+    newNode.classList.add("jump");
+    // After animation, keep active class for glow
+    setTimeout(() => {
+      newNode.classList.remove("jump");
+    }, 600);
+  }
+
+  updateSpotlight();
+
+  // SLIDE THE PATH UPWARD to center this animal
+  slideToActive(true);
+
+  if (autoPlay) playSound(idx, true);
+}
+
+function updateSpotlight() {
+  const d  = data[currentIndex];
+  const si = document.getElementById("spotImg");
+  si.src = d.img;
+  si.onerror = () => { si.style.display="none"; };
+  si.style.display = "block";
+  si.className = "pop";
+  void si.offsetWidth;
+  si.className = "pop";    // re-trigger
+  document.getElementById("spotName").textContent = d.word;
+}
+
+/* ════════════════════════════════════════
+   PREV / NEXT / AUTO
+   ════════════════════════════════════════ */
+function nextAnimal() { selectAnimal((currentIndex+1) % data.length); }
+function prevAnimal() { selectAnimal((currentIndex-1+data.length) % data.length); }
+
+function highlightScrollArrow(direction) {
+  arrowUpEl.classList.toggle("is-active", direction < 0);
+  arrowDownEl.classList.toggle("is-active", direction > 0);
+  clearTimeout(hintResetTimer);
+  hintResetTimer = setTimeout(() => {
+    arrowUpEl.classList.remove("is-active");
+    arrowDownEl.classList.remove("is-active");
+  }, 260);
+}
+
+function stepAnimalByScroll(direction) {
+  highlightScrollArrow(direction);
+  if (direction > 0) {
+    nextAnimal();
+    return;
+  }
+  prevAnimal();
+}
+
+function toggleAuto() {
+  const btn = document.getElementById("autoBtn");
+  if (autoTimer) {
+    clearInterval(autoTimer); autoTimer=null;
+    btn.textContent="▶ Auto"; btn.classList.remove("on");
+  } else {
+    autoTimer = setInterval(nextAnimal, 3600);
+    btn.textContent="⏹ Stop"; btn.classList.add("on");
+  }
+}
+
+function handleWheelScroll(event) {
+  const deltaY = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
+  const deltaX = event.deltaMode === 1 ? event.deltaX * 16 : event.deltaX;
+
+  if (Math.abs(deltaY) < 12 || Math.abs(deltaY) < Math.abs(deltaX)) {
+    return;
+  }
+
+  event.preventDefault();
+
+  if (wheelLock) {
+    return;
+  }
+
+  wheelAccum += deltaY;
+  clearTimeout(wheelIdleT);
+  wheelIdleT = setTimeout(() => {
+    wheelAccum = 0;
+  }, 140);
+
+  if (Math.abs(wheelAccum) < 48) {
+    return;
+  }
+
+  const direction = wheelAccum > 0 ? 1 : -1;
+  wheelAccum = 0;
+  wheelLock = true;
+  stepAnimalByScroll(direction);
+
+  clearTimeout(wheelUnlockT);
+  wheelUnlockT = setTimeout(() => {
+    wheelLock = false;
+  }, 420);
+}
+
+/* ════════════════════════════════════════
+   SETUP TRACK HEIGHT
+   ════════════════════════════════════════ */
+function setupTrack() {
+  const totalH = PAD * 2 + (data.length - 1) * STEP;
+  document.getElementById("pathTrack").style.height = totalH + "px";
+}
+
+/* ════════════════════════════════════════
+   AMBIENT
+   ════════════════════════════════════════ */
+function spawnFireflies(n) {
+  for (let i=0; i<n; i++) {
+    const ff = document.createElement("div");
+    ff.className = "firefly";
+    ff.style.left = Math.random()*100+"vw";
+    ff.style.top  = (8+Math.random()*78)+"vh";
+    const fd=(4+Math.random()*6)+"s", bd=(1.4+Math.random()*2)+"s";
+    ff.style.animationDuration = fd+","+bd;
+    ff.style.animationDelay = (-Math.random()*8)+"s,"+(-Math.random()*3)+"s";
+    document.body.appendChild(ff);
+  }
+}
+
+function spawnLeaves(n) {
+  const em=["🍃","🌿","🍀","☘️"];
+  for (let i=0; i<n; i++) {
+    const lf = document.createElement("div");
+    lf.className = "falling-leaf";
+    lf.textContent = em[Math.floor(Math.random()*em.length)];
+    lf.style.left = Math.random()*100+"vw";
+    const fd=(7+Math.random()*9)+"s", sd=(1.5+Math.random()*2)+"s";
+    lf.style.animationDuration = fd+","+sd;
+    lf.style.animationDelay = (-Math.random()*14)+"s,"+(-Math.random()*3)+"s";
+    document.body.appendChild(lf);
+  }
+}
+
+function spawnGroundPlants() {
+  const svgs=[
+    `<svg viewBox="0 0 40 60" width="40" height="60"><path d="M20 55 Q10 30 2 10" fill="none" stroke="#2d7a30" stroke-width="3"/><ellipse cx="2" cy="10" rx="10" ry="6" fill="#4aaa3a" transform="rotate(-30 2 10)"/><path d="M20 55 Q30 25 38 5" fill="none" stroke="#256018" stroke-width="3"/><ellipse cx="38" cy="5" rx="10" ry="6" fill="#3d9235" transform="rotate(20 38 5)"/></svg>`,
+    `<svg viewBox="0 0 30 50" width="30" height="50"><path d="M15 48 Q5 28 0 8" fill="none" stroke="#2d7a30" stroke-width="2.5"/><ellipse cx="0" cy="8" rx="9" ry="5" fill="#6abf3a" transform="rotate(-25 0 8)"/><path d="M15 48 Q25 20 30 2" fill="none" stroke="#256018" stroke-width="2.5"/><ellipse cx="30" cy="2" rx="9" ry="5" fill="#4aaa3a" transform="rotate(15 30 2)"/></svg>`,
+  ];
+  [2,8,16,24,32,40,52,60,68,76,84,92].forEach((pct,i)=>{
+    const gp=document.createElement("div");
+    gp.className="gplant";
+    gp.style.left=pct+"%";
+    gp.style.bottom=(7+(i%3)*1.5)+"vh";
+    gp.innerHTML=svgs[i%svgs.length];
+    document.body.appendChild(gp);
+  });
+}
+
+/* ════════════════════════════════════════
+   SWIPE + KEYBOARD
+   ════════════════════════════════════════ */
+let tSX=0,tSY=0;
+let hintResetTimer = null;
+let touchStepTriggered = false;
+let touchStepLock = false;
+let touchStepUnlockT = null;
+
+function shouldIgnoreTouchGesture(target) {
+  return !!target.closest(".back-btn, #controls");
+}
+
+function triggerTouchScrollStep(direction, keepLock = true) {
+  touchStepTriggered = true;
+  stepAnimalByScroll(direction);
+  if (!keepLock) return;
+  touchStepLock = true;
+  clearTimeout(touchStepUnlockT);
+  touchStepUnlockT = setTimeout(() => {
+    touchStepLock = false;
+  }, 420);
+}
+
+document.addEventListener("touchstart",e=>{
+  if (shouldIgnoreTouchGesture(e.target)) {
+    tSX = 0;
+    tSY = 0;
+    touchStepTriggered = false;
+    return;
+  }
+  primeAudioPlayback();
+  tSX = e.touches[0].clientX;
+  tSY = e.touches[0].clientY;
+  touchStepTriggered = false;
+},{passive:true});
+
+document.addEventListener("touchmove",e=>{
+  if (!tSX && !tSY) return;
+  if (shouldIgnoreTouchGesture(e.target)) return;
+
+  const dx = e.touches[0].clientX - tSX;
+  const dy = e.touches[0].clientY - tSY;
+
+  if (touchStepLock) {
+    e.preventDefault();
+    return;
+  }
+
+  if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) {
+    e.preventDefault();
+    triggerTouchScrollStep(dx < 0 ? 1 : -1);
+    tSX = e.touches[0].clientX;
+    tSY = e.touches[0].clientY;
+    return;
+  }
+
+  if (Math.abs(dy) > 48 && Math.abs(dy) > Math.abs(dx)) {
+    e.preventDefault();
+    triggerTouchScrollStep(dy < 0 ? 1 : -1);
+    tSX = e.touches[0].clientX;
+    tSY = e.touches[0].clientY;
+  }
+},{passive:false});
+
+document.addEventListener("touchend",e=>{
+  if (!tSX && !tSY) return;
+  if (!touchStepTriggered && !touchStepLock && !shouldIgnoreTouchGesture(e.target)) {
+    const dx = e.changedTouches[0].clientX - tSX;
+    const dy = e.changedTouches[0].clientY - tSY;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){
+      triggerTouchScrollStep(dx<0 ? 1 : -1, false);
+    } else if(Math.abs(dy)>60&&Math.abs(dy)>Math.abs(dx)){
+      triggerTouchScrollStep(dy<0 ? 1 : -1, false);
+    }
+  }
+  tSX = 0;
+  tSY = 0;
+  touchStepTriggered = false;
+},{passive:true});
+window.addEventListener("wheel", handleWheelScroll, {passive:false});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="ArrowDown")nextAnimal();
+  if(e.key==="ArrowLeft" ||e.key==="ArrowUp")  prevAnimal();
+  if(e.key===" ")playCurrentSound();
+});
+
+/* ════════════════════════════════════════
+   BUILD SCENE
+   ════════════════════════════════════════ */
+function buildScene(instant=false) {
+  pathPoints = computePoints(data.length);
+  setupTrack();
+  drawPath(pathPoints);
+  createNodes(pathPoints);
+  updateSpotlight();
+  slideToActive(!instant);
+}
+
+let resizeT;
+window.addEventListener("resize",()=>{
+  clearTimeout(resizeT);
+  resizeT=setTimeout(()=>buildScene(true),180);
+});
+
+window.addEventListener("load",()=>{
+  spawnFireflies(14);
+  spawnLeaves(10);
+  spawnGroundPlants();
+  buildScene(true);
+  setTimeout(()=>playSound(0,false),700);
+  speechSynthesis.onvoiceschanged=()=>{};
+});
+</script>
+</body>
+</html>
